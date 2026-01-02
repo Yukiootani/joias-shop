@@ -12,6 +12,7 @@
     <link rel="manifest" href="manifest.json">
     
     <style>
+        /* --- VISUAL ROSA & DOURADO (MANTIDO) --- */
         :root { 
             --rosa-shock: #FF007F;
             --dourado: #D4AF37;
@@ -21,67 +22,16 @@
             --bg-color: #fff; 
         }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
-            margin: 0; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            padding-bottom: 80px; 
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
         
-        #android-install-btn { 
-            display: none; 
-            width: 100%; 
-            background: linear-gradient(45deg, var(--rosa-shock), #ff66b2);
-            color: white; 
-            border: none; 
-            padding: 15px; 
-            font-weight: bold; 
-            text-align: center; 
-            cursor: pointer; 
-            z-index: 9999; 
-            box-shadow: 0 4px 10px rgba(255, 0, 127, 0.3);
-        }
+        #android-install-btn { display: none; width: 100%; background: linear-gradient(45deg, var(--rosa-shock), #ff66b2); color: white; border: none; padding: 15px; font-weight: bold; text-align: center; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(255, 0, 127, 0.3); }
 
-        /* HEADER COM LOGO MAIOR */
-        header { 
-            background-color: #fff; 
-            text-align: center; 
-            padding: 20px 15px; /* Um pouco mais de espaço vertical */
-            border-bottom: 3px solid var(--dourado); 
-            position: relative; 
-            overflow: hidden; /* Garante que nada vaze do header */
-        }
-        
-        /* Estilo da Imagem do Logo - AUMENTADO */
-        .header-logo { 
-            max-width: 320px; /* Aumentado de 250px para 320px */
-            width: 85%; /* Ocupa boa parte da largura em telas pequenas */
-            height: auto; 
-            display: block; 
-            margin: 0 auto; 
-            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.15)); /* Sombra um pouco mais marcada */
-        }
-        
+        header { background-color: #fff; text-align: center; padding: 20px 15px; border-bottom: 3px solid var(--dourado); position: relative; overflow: hidden; }
+        .header-logo { max-width: 320px; width: 85%; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.15)); }
         header p { color: #888; font-size: 1em; margin: 12px 0 0 0; font-style: italic; }
 
-        #notification-bell { 
-            position: fixed; top: 15px; right: 15px; 
-            font-size: 22px; color: var(--dourado); 
-            cursor: pointer; z-index: 2000; 
-            background-color: #fff; 
-            border: 1px solid var(--prata-escuro);
-            border-radius: 50%; padding: 8px; 
-            width: 40px; height: 40px; 
-            display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-        }
-        #notification-dot { 
-            position: absolute; top: 5px; right: 5px; 
-            width: 10px; height: 10px; 
-            background-color: var(--rosa-shock); 
-            border-radius: 50%; display: none; border: 1px solid white; 
-        }
+        #notification-bell { position: fixed; top: 15px; right: 15px; font-size: 22px; color: var(--dourado); cursor: pointer; z-index: 2000; background-color: #fff; border: 1px solid var(--prata-escuro); border-radius: 50%; padding: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        #notification-dot { position: absolute; top: 5px; right: 5px; width: 10px; height: 10px; background-color: var(--rosa-shock); border-radius: 50%; display: none; border: 1px solid white; }
 
         #inbox-modal { display: none; position: fixed; z-index: 2500; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: start; padding-top: 60px; }
         .inbox-content { background-color: #fff; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid var(--dourado); }
@@ -90,76 +40,37 @@
         #inbox-list { max-height: 60vh; overflow-y: auto; padding: 0; margin: 0; list-style: none; }
         .inbox-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
         .inbox-title { font-weight: bold; margin-bottom: 5px; color: var(--rosa-shock); } 
-        .inbox-body { font-size: 0.9em; color: #666; } 
-        .inbox-empty { padding: 20px; text-align: center; color: #999; }
+        .inbox-body { font-size: 0.9em; color: #666; } .inbox-empty { padding: 20px; text-align: center; color: #999; }
 
         main { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        
         #search-container { position: relative; max-width: 600px; margin: 0 auto 20px; }
         #search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid #ddd; border-radius: 25px; outline: none; box-sizing: border-box; background: var(--prata); }
         #search-input:focus { border-color: var(--rosa-shock); background: #fff; box-shadow: 0 0 5px rgba(255, 0, 127, 0.2); }
         .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--prata-escuro); }
         
         #secao-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .secao-button { 
-            background: #fff; color: #555; 
-            border: 1px solid #ddd; padding: 8px 15px; 
-            border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 0.9em; 
-        }
-        .secao-button.active { 
-            background: var(--rosa-shock); 
-            color: #fff; 
-            border-color: var(--rosa-shock); 
-            font-weight: bold; 
-            box-shadow: 0 3px 8px rgba(255, 0, 127, 0.3);
-        }
+        .secao-button { background: #fff; color: #555; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 0.9em; }
+        .secao-button.active { background: var(--rosa-shock); color: #fff; border-color: var(--rosa-shock); font-weight: bold; box-shadow: 0 3px 8px rgba(255, 0, 127, 0.3); }
         
         #controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .filter-button { background: var(--prata); padding: 10px 20px; border-radius: 20px; border: 1px solid #ccc; cursor: pointer; font-size: 0.9em; font-weight: 600; }
-        .filter-button.active { 
-            background: var(--dourado); 
-            color: #fff; 
-            border-color: var(--dourado); 
-        }
+        .filter-button.active { background: var(--dourado); color: #fff; border-color: var(--dourado); }
 
         #products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .product-card { 
-            border: 1px solid #eee; border-radius: 8px; overflow: hidden; 
-            text-decoration: none; color: inherit; display: block; background: #fff; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            position: relative; /* Garante que o badge fique dentro do card */
-        }
+        .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; display: block; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; }
         .product-image-container { padding-top: 100%; position: relative; background: var(--prata); }
         .product-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .product-info { padding: 12px; }
         .product-name { font-size: 0.95em; margin: 0 0 5px; height: 2.6em; overflow: hidden; color: #444; }
-        .product-price { 
-            font-weight: bold; 
-            color: var(--dourado); 
-            font-size: 1.2em; 
-        }
-        
+        .product-price { font-weight: bold; color: var(--dourado); font-size: 1.2em; }
         .badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 3px; font-size: 0.75em; color: #fff; font-weight: bold; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .badge-novo { background: var(--rosa-shock); } 
-        .badge-esgotado { background: var(--prata-escuro); }
+        .badge-novo { background: var(--rosa-shock); } .badge-esgotado { background: var(--prata-escuro); }
         
         footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 0.8em; color: #777; border-top: 1px solid #eee; background: var(--prata); }
-        
-        #cart-icon { 
-            position: fixed; bottom: 20px; right: 20px; 
-            width: 60px; height: 60px; 
-            background: linear-gradient(135deg, var(--rosa-shock), #d10068); 
-            color: white; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 24px; 
-            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); 
-            z-index: 1000; text-decoration: none; border: 2px solid white;
-        }
+        #cart-icon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, var(--rosa-shock), #d10068); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); z-index: 1000; text-decoration: none; border: 2px solid white; }
         #cart-count { position: absolute; top: -5px; right: -5px; background: var(--dourado); color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; display: none; border: 2px solid #fff; }
-        
         #ios-install-banner { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.98); border-top: 1px solid var(--dourado); padding: 15px; text-align: center; z-index: 2000; }
         #close-ios-banner { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: var(--rosa-shock); }
-
         @media (min-width: 768px) { #products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
     </style>
 </head>
@@ -200,9 +111,7 @@
     </main>
     
     <a id="cart-icon" href="carrinho.html"><i class="fas fa-shopping-bag"></i><span id="cart-count">0</span></a>
-    
     <div id="ios-install-banner"><span id="close-ios-banner">&times;</span><p>Instale nosso App: Toque em <strong>Compartilhar</strong> <i class="fas fa-share-square"></i> e depois em <strong>Adicionar à Tela de Início</strong> <i class="fas fa-plus-square"></i>.</p></div>
-    
     <footer><p>© 2026 3Marias Joias.</p></footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -226,11 +135,12 @@
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
         installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; } });
 
-        // --- LÓGICA DE NOTIFICAÇÃO BLINDADA ---
+        // --- LÓGICA DE NOTIFICAÇÃO BLINDADA (VOLTAMOS PARA A VERSÃO ORIGINAL DO FIX) ---
         let messaging; 
         try { 
             if (firebase.messaging.isSupported()) {
                 messaging = firebase.messaging();
+                // Ouve quando o app está aberto
                 messaging.onMessage((payload) => {
                     console.log('Mensagem em Foreground:', payload);
                     alert(`💎 ${payload.notification.title}\n${payload.notification.body}`);
@@ -242,14 +152,20 @@
         async function requestPermission() {
             if (!messaging) return;
             try {
+                // 1. Pede Permissão
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
+                    
+                    // 2. REGISTRA O ARQUIVO CORRETO ANTES DE PEDIR O TOKEN (CORREÇÃO ANDROID)
                     const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
                     await navigator.serviceWorker.ready;
+
+                    // 3. Pede o Token ligando ao registro acima
                     const token = await messaging.getToken({ 
                         vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI',
                         serviceWorkerRegistration: registration 
                     });
+                    
                     if (token) {
                         await db.collection('push_tokens').doc(token).set({
                             token: token,
@@ -262,13 +178,18 @@
                 } else {
                     alert("⚠️ Permissão bloqueada. Vá nas configurações do site e desbloqueie.");
                 }
-            } catch (e) { console.error("Erro token:", e); alert("Erro ao ativar notificações: " + e.message); }
+            } catch (e) {
+                console.error("Erro token:", e);
+                alert("Erro ao ativar notificações: " + e.message);
+            }
         }
 
         // --- SINO & INBOX ---
         const bell=document.getElementById('notification-bell'), inboxModal=document.getElementById('inbox-modal'), inboxList=document.getElementById('inbox-list');
         bell.addEventListener('click', () => {
+            // Tenta ativar se ainda não tiver ativado
             if (Notification.permission === 'default') requestPermission();
+            
             inboxModal.style.display = 'flex';
             carregarMensagens();
             document.getElementById('notification-dot').style.display = 'none';
@@ -311,7 +232,11 @@
         secaoButtons.forEach(btn => { btn.addEventListener('click', () => { secaoButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentSecao = btn.dataset.secao; fetchProducts(); }); });
         filterButtons.forEach(btn => { btn.addEventListener('click', () => { filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.filter; fetchProducts(); }); });
         
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('firebase-messaging-sw.js');
+        // --- SERVICE WORKER GERAL (IMPORTANTE: Restaurado da versão Vitória) ---
+        if ('serviceWorker' in navigator) {
+             navigator.serviceWorker.register('firebase-messaging-sw.js');
+        }
+
         const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
         if (isIos() && !isInStandaloneMode()) { document.getElementById('ios-install-banner').style.display = 'block'; document.getElementById('close-ios-banner').addEventListener('click', () => document.getElementById('ios-install-banner').style.display = 'none'); document.getElementById('cart-icon').style.bottom = '100px'; }
