@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumière Joias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">Lumière <span>Joias</span></div>
+        <div class="cart-icon" onclick="toggleModal()">
+            <i class="fas fa-shopping-bag"></i>
+            <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <h2>Detalhes que encantam</h2>
+            <p>Semi-joias com acabamento premium.</p>
+        </div>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">Coleção Exclusiva</h2>
+        <div id="products-grid" class="grid">
+            </div>
+    </section>
+
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Sua Sacola</h3>
+                <span class="close" onclick="toggleModal()">&times;</span>
+            </div>
+            <div id="cart-items"></div>
+            <div class="total">Total: R$ <span id="cart-total">0,00</span></div>
+            <button class="btn-whatsapp" onclick="checkoutWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Finalizar no WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
