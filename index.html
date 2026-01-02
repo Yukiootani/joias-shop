@@ -2,49 +2,81 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumière Joias</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lumière Joias | Oficial</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <div class="logo">Lumière <span>Joias</span></div>
-        <div class="cart-icon" onclick="toggleModal()">
-            <i class="fas fa-shopping-bag"></i>
-            <span id="cart-count">0</span>
+    <header id="main-header">
+        <div class="header-logo">
+            <h1>Lumière <span>Joias</span></h1>
         </div>
+        <div class="header-sub">Elegância em cada detalhe</div>
     </header>
 
-    <section class="hero">
-        <div class="hero-text">
-            <h2>Detalhes que encantam</h2>
-            <p>Semi-joias com acabamento premium.</p>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="O que você procura?">
+        <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <div id="secao-filters">
+        <button class="secao-button active" data-secao="todos">Todos</button>
+        <button class="secao-button" data-secao="colares">Colares</button>
+        <button class="secao-button" data-secao="brincos">Brincos</button>
+        <button class="secao-button" data-secao="aneis">Anéis</button>
+        <button class="secao-button" data-secao="pulseiras">Pulseiras</button>
+        <button class="secao-button" data-secao="conjuntos">Conjuntos</button>
+    </div>
+
+    <div id="controls">
+        <button class="filter-button active" data-filter="pronta-entrega">Pronta Entrega</button>
+        <button class="filter-button" data-filter="sob-encomenda">Sob Encomenda</button>
+    </div>
+
+    <main class="container">
+        <div id="loading-message" style="text-align:center; padding:30px; color:var(--gold);">
+            <i class="fas fa-spinner fa-spin"></i> Carregando coleção...
         </div>
-    </section>
-
-    <section class="container">
-        <h2 class="section-title">Coleção Exclusiva</h2>
-        <div id="products-grid" class="grid">
+        <div id="products-grid">
             </div>
-    </section>
+    </main>
 
-    <div id="cart-modal" class="modal hidden">
+    <div id="cart-icon" onclick="toggleCart()">
+        <i class="fas fa-shopping-bag"></i>
+        <span id="cart-count">0</span>
+    </div>
+
+    <div id="cart-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Sua Sacola</h3>
-                <span class="close" onclick="toggleModal()">&times;</span>
+                <span style="cursor:pointer; font-size:1.5rem;" onclick="toggleCart()">&times;</span>
             </div>
-            <div id="cart-items"></div>
-            <div class="total">Total: R$ <span id="cart-total">0,00</span></div>
-            <button class="btn-whatsapp" onclick="checkoutWhatsApp()">
-                <i class="fab fa-whatsapp"></i> Finalizar no WhatsApp
-            </button>
+            
+            <div id="cart-items" style="flex-grow:1; overflow-y:auto;">
+                <p style="text-align:center; color:#999; margin-top:20px;">Sua sacola está vazia.</p>
+            </div>
+
+            <div style="border-top:1px solid #eee; padding-top:15px; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold; font-size:1.1rem;">
+                    <span>Total:</span>
+                    <span id="cart-total">R$ 0,00</span>
+                </div>
+                <button class="btn-whatsapp" onclick="checkoutWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Finalizar Pedido
+                </button>
+            </div>
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
     <script src="app.js"></script>
 </body>
 </html>
