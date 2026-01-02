@@ -1,0 +1,69 @@
+:root {
+    --gold: #D4AF37;       /* Dourado */
+    --baby-pink: #FFF0F5;  /* Rosa Bebê */
+    --silver: #C0C0C0;     /* Prata */
+    --text: #333;
+    --white: #fff;
+    --font-title: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: var(--font-body); background-color: var(--white); color: var(--text); }
+
+/* Header */
+header {
+    padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--baby-pink);
+    position: sticky; top: 0; background: var(--white); z-index: 10;
+}
+.logo { font-family: var(--font-title); font-size: 1.5rem; font-weight: 700; }
+.logo span { color: var(--gold); }
+.cart-icon { position: relative; cursor: pointer; color: var(--gold); font-size: 1.2rem; }
+#cart-count {
+    position: absolute; top: -8px; right: -8px;
+    background: var(--text); color: var(--white);
+    font-size: 0.7rem; padding: 2px 5px; border-radius: 50%;
+}
+
+/* Hero */
+.hero {
+    background-color: var(--baby-pink);
+    height: 300px;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    margin-bottom: 3rem; border-bottom: 5px solid var(--gold);
+}
+.hero h2 { font-family: var(--font-title); font-size: 2.5rem; color: var(--gold); }
+
+/* Grid */
+.container { max-width: 1000px; margin: 0 auto; padding: 0 1rem; }
+.section-title { text-align: center; font-family: var(--font-title); margin-bottom: 2rem; color: var(--text); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; padding-bottom: 4rem; }
+
+.card { border: 1px solid #eee; padding: 1rem; text-align: center; transition: 0.3s; }
+.card:hover { border-color: var(--gold); transform: translateY(-5px); }
+.img-placeholder { width: 100%; height: 200px; background-color: var(--baby-pink); object-fit: cover; margin-bottom: 1rem; }
+.price { display: block; color: var(--gold); font-weight: bold; margin: 0.5rem 0; }
+
+.btn-add {
+    background: var(--white); border: 1px solid var(--silver);
+    padding: 8px 16px; cursor: pointer; text-transform: uppercase;
+    font-size: 0.8rem; transition: 0.3s;
+}
+.btn-add:hover { background: var(--gold); color: var(--white); border-color: var(--gold); }
+
+/* Modal */
+.hidden { display: none; }
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 20;
+    display: flex; justify-content: flex-end;
+}
+.modal-content { background: var(--white); width: 350px; height: 100%; padding: 2rem; display: flex; flex-direction: column; }
+.modal-header { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+.close { cursor: pointer; font-size: 1.5rem; }
+.cart-item { display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+.total { margin-top: auto; font-size: 1.2rem; font-weight: bold; border-top: 2px solid var(--gold); padding-top: 1rem; margin-bottom: 1rem; }
+.btn-whatsapp { background: #25D366; color: white; border: none; padding: 1rem; width: 100%; cursor: pointer; font-weight: bold; }
