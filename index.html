@@ -3,129 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#D4AF37">
-    <title>Joias & Acessórios</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
+    <title>Admin 3Marias | Joias</title>
     <style>
-        :root { --primary-color: #D4AF37; /* Dourado */ --accent-color: #000; --text-color: #333; --bg-color: #fff; --border-color: #f0f0f0; --whatsapp-green: #28a745; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
-        header { background-color: #fff; text-align: center; padding: 10px; border-bottom: 2px solid var(--primary-color); }
-        h1 { color: var(--primary-color); font-family: 'Times New Roman', serif; letter-spacing: 2px; margin: 0; }
-        
-        main { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        #search-container { position: relative; max-width: 600px; margin: 0 auto 20px; }
-        #search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
-        #search-input:focus { border-color: var(--primary-color); }
-        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
-        
-        #secao-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .secao-button { background: #fff; color: #555; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
-        .secao-button.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); font-weight: bold; }
-        
-        #controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .filter-button { background: #f9f9f9; padding: 10px 20px; border-radius: 20px; border: 1px solid #ccc; cursor: pointer; }
-        .filter-button.active { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
-
-        #products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; position: relative; display: block; }
-        .product-image-container { padding-top: 100%; position: relative; background: #f4f4f4; } /* 1:1 Square for Jewelry */
-        .product-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .product-info { padding: 10px; }
-        .product-name { font-size: 0.9em; margin: 0 0 5px; }
-        .product-price { font-weight: bold; color: var(--primary-color); font-size: 1.1em; }
-        
-        .badge { position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: 3px; font-size: 0.8em; color: #fff; font-weight: bold; z-index: 10; }
-        .badge-novo { background: var(--accent-color); } .badge-esgotado { background: #999; }
-
-        footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 0.8em; color: #777; border-top: 1px solid #eee; }
-        #cart-icon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--whatsapp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
-        #cart-count { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; display: none; }
-        
-        @media (min-width: 768px) { #products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
+        :root { --primary-color: #D4AF37; --accent-color: #333; --text-color: #333; --bg-color: #fcfcfc; --border-color: #e0e0e0; --error-color: #dc3545; }
+        body { font-family: Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        h1, h2, h3 { color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
+        form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; padding: 20px; background: #f9f9f9; border-radius: 5px; }
+        label { font-weight: bold; margin-bottom: -10px; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; }
+        button { background-color: var(--primary-color); color: white; padding: 12px; border: none; border-radius: 4px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        #status, #loginStatus { text-align: center; font-weight: bold; padding: 10px; border-radius: 4px; margin-bottom: 15px; display: none; }
+        .success { background-color: #e6f9e6; color: #28a745; } .error { background-color: #fdeeee; color: var(--error-color); } .loading { background-color: #e6f2ff; color: #007bff; }
+        .table-container { overflow-x: auto; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
+        img.thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        .delete-btn { background-color: var(--error-color); font-size: 0.8em; padding: 5px 8px; }
+        .edit-btn { background-color: var(--accent-color); color: #fff; font-size: 0.8em; padding: 5px 8px; }
+        #variants-container { border: 1px solid var(--border-color); padding: 10px; border-radius: 4px; background: #fff; }
+        .variant-entry { border-bottom: 1px dashed var(--border-color); padding-bottom: 10px; margin-bottom: 10px; }
+        .variant-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 5px; }
+        .variant-size-stock-group { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin-top: 5px; }
+        .variant-size-stock-group div { display: flex; flex-direction: column; align-items: center; }
+        .variant-size-stock-group label { font-size: 0.8em; margin-bottom: 2px; }
+        .variant-size-stock-group input { width: 45px; padding: 5px; text-align: center; }
+        #login-section { border-bottom: 2px solid var(--accent-color); margin-bottom: 20px; }
+        #admin-panel { display: none; } 
+        #push-panel { background-color: #fffbe6; border: 1px solid #ffe58f; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        #reviews-panel { background-color: #e6f7ff; border: 1px solid #91d5ff; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
     </style>
 </head>
 <body>
-    <header id="main-header">
-        <h1>JOIAS & ACESSÓRIOS</h1>
-        <p>Elegância em cada detalhe.</p>
-    </header>
+    <div class="container">
+        <h1>Admin 3Marias Joias</h1>
+        <section id="login-section">
+            <h3>Login</h3>
+            <form id="loginForm"><input type="email" id="login-email" placeholder="Email"><input type="password" id="login-password" placeholder="Senha"><button type="submit">Entrar</button></form>
+            <div id="loginStatus"></div>
+        </section>
 
-    <main>
-        <div id="search-container"><input type="text" id="search-input" placeholder="Buscar joia..."><i class="fas fa-search search-icon"></i></div>
-        
-        <div id="secao-filters">
-            <button class="secao-button active" data-secao="todos">Todas</button>
-            <button class="secao-button" data-secao="aneis">Anéis</button>
-            <button class="secao-button" data-secao="brincos">Brincos</button>
-            <button class="secao-button" data-secao="colares">Colares</button>
-            <button class="secao-button" data-secao="pulseiras">Pulseiras</button>
-            <button class="secao-button" data-secao="conjuntos">Conjuntos</button>
-            <button class="secao-button" data-secao="infantil">Infantil</button>
-            <button class="secao-button" data-secao="masculino">Masculino</button>
-        </div>
+        <section id="admin-panel">
+            <div id="status"></div>
+            <div id="push-panel">
+                <h3>📢 Notificação (Push)</h3>
+                <input type="text" id="push-title" placeholder="Título (Ex: Chegou Ouro 18k!)">
+                <textarea id="push-body" placeholder="Mensagem..." style="min-height: 60px;"></textarea>
+                <input type="text" id="push-link" placeholder="Link (opcional)">
+                <button id="btn-send-push" style="background-color: #d48806; margin-top: 10px;">Enviar</button>
+                <div class="table-container" style="margin-top:10px"><table id="messages-table"><thead><tr><th>Data</th><th>Msg</th><th>Ação</th></tr></thead><tbody id="messages-list"></tbody></table></div>
+            </div>
+            
+            <div id="reviews-panel">
+                <h3>⭐ Gerenciar Avaliações</h3>
+                <select id="review-product-select"><option value="">Carregando produtos...</option></select>
+                <input type="text" id="review-name" placeholder="Nome do Cliente">
+                <select id="review-rating"><option value="5">5 Estrelas</option><option value="4">4 Estrelas</option><option value="3">3 Estrelas</option></select>
+                <textarea id="review-text" placeholder="Comentário"></textarea>
+                <button id="btn-save-review" style="background-color: #0050b3; margin-top:10px">Salvar Avaliação</button>
+                <div class="table-container" style="margin-top:10px"><table id="reviews-table"><thead><tr><th>Prod</th><th>Cli</th><th>Nota</th><th>Ação</th></tr></thead><tbody id="reviews-list"></tbody></table></div>
+            </div>
+            <hr>
 
-        <div id="controls">
-            <button class="filter-button active" data-filter="pronta-entrega">Pronta Entrega</button>
-            <button class="filter-button" data-filter="sob-encomenda">Sob Encomenda</button>
-        </div>
+            <form id="product-form">
+                <h3 id="form-title">Novo Produto</h3>
+                <input type="hidden" id="productId"> 
+                <label>Nome da Joia:</label><input type="text" id="name" required>
+                <label>Preço (¥):</label><input type="number" id="price" required>
+                <label>Categoria:</label>
+                <select id="secao" required>
+                    <option value="">Escolha...</option>
+                    <option value="aneis">Anéis</option>
+                    <option value="brincos">Brincos</option>
+                    <option value="colares">Colares</option>
+                    <option value="pulseiras">Pulseiras</option>
+                    <option value="tornozeleiras">Tornozeleiras</option>
+                    <option value="conjuntos">Conjuntos</option>
+                    <option value="infantil">Infantil</option>
+                    <option value="masculino">Masculino</option>
+                </select>
+                <label>Descrição:</label><textarea id="description" rows="4"></textarea>
+                
+                <label>Variações (Cor/Metal e Tamanho):</label>
+                <div id="variants-container"></div>
+                <button type="button" id="add-variant-btn" style="margin-top:5px;">+ Adicionar Variação</button>
 
-        <h2 id="collection-title" style="text-align:center; color:#555; margin-bottom:20px;">Carregando...</h2>
-        <div id="products-grid"></div>
-    </main>
-    
-    <a id="cart-icon" href="carrinho.html"><i class="fas fa-shopping-bag"></i><span id="cart-count">0</span></a>
-    <footer>© 2025 Joias & Acessórios</footer>
+                <label>Disponibilidade:</label><select id="source" required><option value="pronta-entrega">Pronta Entrega</option><option value="sob-encomenda">Sob Encomenda</option></select>
+                <label>Selo:</label><select id="isFeatured"><option value="nenhum">Nenhum</option><option value="novo">Novidade</option><option value="destaque">Destaque</option></select>
+                <label>Mídia:</label>
+                <input type="file" id="imageUrl"><small>Capa</small>
+                <input type="file" id="videoUrl"><small>Vídeo (opcional)</small>
+                <input type="file" id="galeria" multiple><small>Galeria (várias fotos)</small>
+                
+                <button type="submit" id="save-btn" style="margin-top:15px;">Salvar Produto</button>
+                <button type="button" id="cancel-edit-btn" style="display:none; background:#777; margin-top:10px;">Cancelar</button>
+            </form>
+
+            <form id="logo-form"><h3>Logo do Site</h3><img id="logo-preview"><input type="file" id="logo-upload"><button type="submit">Salvar Logo</button></form>
+            
+            <h2>Lista de Produtos</h2>
+            <div class="table-container"><table id="products-table"><thead><tr><th>Foto</th><th>Nome</th><th>Cat.</th><th>Preço</th><th>Estoque</th><th>Ações</th></tr></thead><tbody id="products-list"></tbody></table></div>
+            <button id="btnLogout" style="margin-top:30px;">Sair</button>
+        </section>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> 
+
     <script>
-        const firebaseConfig = { apiKey: "SUA_NOVA_API_KEY", authDomain: "novo.firebaseapp.com", projectId: "novo", storageBucket: "novo.app", messagingSenderId: "123", appId: "123" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWYPzaDszTenGqC627aKH5CNaCdIOdoKw",
+            authDomain: "marias-joias-db345.firebaseapp.com",
+            projectId: "marias-joias-db345",
+            storageBucket: "marias-joias-db345.firebasestorage.app",
+            messagingSenderId: "977811297166",
+            appId: "1:977811297166:web:d0d9cf5477d7deb8bdcadf"
+        };
+        
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const db = firebase.firestore(); const storage = firebase.storage(); const auth = firebase.auth(); 
 
-        const grid=document.getElementById('products-grid'), cartCountEl=document.getElementById('cart-count'), secaoButtons=document.querySelectorAll('.secao-button'), filterButtons=document.querySelectorAll('.filter-button');
-        let currentFilter='pronta-entrega', currentSecao='todos';
+        async function uploadFile(file, path) { const ref = storage.ref(path); await ref.put(file); return await ref.getDownloadURL(); }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const statusDiv = document.getElementById('status');
+            let oldImageUrl='', oldVideoUrl='', oldGaleria=[];
 
-        async function fetchProducts(){
-            grid.innerHTML = '<p style="text-align:center; width:100%">Carregando...</p>';
-            let q = db.collection("products"); 
-            if(currentSecao!=='todos') q = q.where("secao","==",currentSecao);
-            q = q.where("source","==",currentFilter).orderBy("createdAt","desc");
+            function showStatus(div, msg, type) { if(!div) return; div.textContent=msg; div.className='status '+type; div.style.display='block'; setTimeout(()=>{div.style.display='none'},4000); }
+
+            loginForm.addEventListener('submit', async (e) => { e.preventDefault(); try { await auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-password').value); } catch(err) { alert(err.message); } });
+            document.getElementById('btnLogout').addEventListener('click', () => auth.signOut().then(()=>window.location.reload()));
+            auth.onAuthStateChanged((user) => { if (user) { document.getElementById('login-section').style.display='none'; document.getElementById('admin-panel').style.display='block'; fetchProducts(); fetchMessages(); fetchReviews(); loadSiteConfig(); } });
+
+            // VARIANTES JOIAS (Anéis Numerados + Único)
+            const variantsContainer = document.getElementById('variants-container');
+            const metals = [
+                {name:"Ouro 18k",value:"#D4AF37"},{name:"Prata 925",value:"#C0C0C0"},{name:"Ródio Branco",value:"#E0E0E0"},{name:"Ródio Negro",value:"#404040"},{name:"Rose Gold",value:"#B76E79"},
+                {name:"Zircônia Branca",value:"#F0F8FF"},{name:"Zircônia Rosa",value:"#FFC0CB"},{name:"Esmeralda",value:"#50C878"},{name:"Rubi",value:"#E0115F"},{name:"Safira",value:"#0F52BA"},
+                {name:"Pérola",value:"#FFFFF0"},{name:"Preto",value:"#000000"},{name:"Colorido",value:"#ddd"}
+            ];
             
-            try {
-                const snap = await q.get();
-                grid.innerHTML = '';
-                if(snap.empty) { grid.innerHTML = '<p style="text-align:center; width:100%">Nenhum produto.</p>'; return; }
-                
-                snap.forEach(d => {
-                    const p=d.data(), id=d.id, pf=parseFloat(p.price).toLocaleString('ja-JP');
-                    let badge=''; if(p.isFeatured==='novo') badge='<span class="badge badge-novo">NOVO</span>';
-                    if(p.estoqueTotal <= 0) badge='<span class="badge badge-esgotado">ESGOTADO</span>';
-                    
-                    grid.innerHTML += `
-                    <a href="detalhes.html?id=${id}" class="product-card">
-                        ${badge}
-                        <div class="product-image-container"><img src="${p.imageUrl}" class="product-image"></div>
-                        <div class="product-info">
-                            <h3 class="product-name">${p.name}</h3>
-                            <div class="product-price">¥${pf}</div>
-                        </div>
-                    </a>`;
+            document.getElementById('add-variant-btn').addEventListener('click', () => createVariantEntry());
+            
+            function createVariantEntry(c='', s={Unico:0, '12':0, '14':0, '16':0, '18':0, '20':0, '22':0, '24':0}) {
+                const div=document.createElement('div'); div.className='variant-entry';
+                let opts=metals.map(x=>`<option value="${x.name}" style="background:${x.value}">${x.name}</option>`).join('');
+                div.innerHTML = `
+                <div class="variant-row"><select>${opts}<option value="custom">Outro...</option></select><input style="display:none" placeholder="Nome da Variação"></div>
+                <div class="variant-size-stock-group">
+                    <div><label>Único</label><input type="number" data-s="Unico" value="${s.Unico||0}"></div>
+                    <div><label>12</label><input type="number" data-s="12" value="${s['12']||0}"></div>
+                    <div><label>14</label><input type="number" data-s="14" value="${s['14']||0}"></div>
+                    <div><label>16</label><input type="number" data-s="16" value="${s['16']||0}"></div>
+                    <div><label>18</label><input type="number" data-s="18" value="${s['18']||0}"></div>
+                    <div><label>20</label><input type="number" data-s="20" value="${s['20']||0}"></div>
+                    <div><label>22</label><input type="number" data-s="22" value="${s['22']||0}"></div>
+                    <div><label>24</label><input type="number" data-s="24" value="${s['24']||0}"></div>
+                </div>
+                <button type="button" class="delete-btn" onclick="this.parentElement.remove()" style="margin-top:5px">Remover Cor</button>`;
+                variantsContainer.appendChild(div);
+                const sel=div.querySelector('select'); sel.value=c; sel.onchange=function(){div.querySelector('input').style.display=this.value==='custom'?'block':'none'};
+            }
+            
+            function getVariants(){ let v={}; variantsContainer.querySelectorAll('.variant-entry').forEach(e=>{ let sel=e.querySelector('select').value, c=e.querySelector('input').value, col=sel==='custom'?c:sel; if(col){let st={}; e.querySelectorAll('input[type=number]').forEach(i=>st[i.dataset.s]=parseInt(i.value)||0); v[col]=st;} }); return v; }
+            function setVariants(v){ variantsContainer.innerHTML=''; if(v)for(let c in v)createVariantEntry(c,v[c]); }
+            function calcTotal(v){ let t=0; for(let c in v)for(let s in v[c])t+=v[c][s]; return t; }
+
+            // CRUD Produtos
+            const productsList = document.getElementById('products-list');
+            const reviewProductSelect = document.getElementById('review-product-select');
+            
+            async function fetchProducts() {
+                productsList.innerHTML = '...'; reviewProductSelect.innerHTML = '<option value="">...</option>';
+                const snap = await db.collection("products").orderBy("createdAt", "desc").get();
+                let h = '';
+                snap.forEach(doc => {
+                    let p = doc.data();
+                    h += `<tr><td><img src="${p.imageUrl||''}" class="thumb"></td><td>${p.name}</td><td>${p.secao}</td><td>${p.price}</td><td>${p.estoqueTotal||0}</td><td><button class="edit-btn" data-id="${doc.id}">Edit</button> <button class="delete-btn" data-id="${doc.id}">X</button></td></tr>`;
+                    let opt = document.createElement('option'); opt.value = doc.id; opt.text = p.name; reviewProductSelect.appendChild(opt);
                 });
-                document.getElementById('collection-title').textContent = document.querySelector('.secao-button.active').textContent;
-            } catch(e) { grid.innerHTML='Erro ao carregar.'; console.error(e); }
-        }
+                productsList.innerHTML = h || '<tr><td colspan="6">Vazio</td></tr>';
+            }
 
-        function updateCartIcon(){ const c=JSON.parse(localStorage.getItem('whatsappCart'))||{items:{}}; let q=0; Object.values(c.items).forEach(i=>q+=i.quantity); if(q>0){cartCountEl.textContent=q;cartCountEl.style.display='flex'}else{cartCountEl.style.display='none'} }
-        
-        secaoButtons.forEach(b=>b.addEventListener('click',()=>{secaoButtons.forEach(bt=>bt.classList.remove('active'));b.classList.add('active');currentSecao=b.dataset.secao;fetchProducts()}));
-        filterButtons.forEach(b=>b.addEventListener('click',()=>{filterButtons.forEach(bt=>bt.classList.remove('active'));b.classList.add('active');currentFilter=b.dataset.filter;fetchProducts()}));
-        
-        // Load Config (Logo)
-        db.collection("configuracoes").doc("siteInfo").get().then(d=>{if(d.exists&&d.data().logoUrl)document.getElementById('main-header').innerHTML=`<img src="${d.data().logoUrl}" style="max-width:200px">`});
+            document.getElementById('product-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                showStatus(statusDiv, "Salvando...", "loading");
+                const id = document.getElementById('productId').value || `pid_${Date.now()}`;
+                try {
+                    let img=oldImageUrl, vid=oldVideoUrl, gal=oldGaleria;
+                    const fImg=document.getElementById('imageUrl').files[0], fVid=document.getElementById('videoUrl').files[0], fGal=document.getElementById('galeria').files;
+                    if(fImg) img = await uploadFile(fImg, `products/${id}/capa`);
+                    if(fVid) vid = await uploadFile(fVid, `products/${id}/video`);
+                    if(fGal.length > 0) { gal = []; for(let f of fGal) gal.push(await uploadFile(f, `products/${id}/gal_${f.name}`)); }
 
-        document.addEventListener('DOMContentLoaded', ()=>{ fetchProducts(); updateCartIcon(); });
+                    let v = getVariants();
+                    let data = {
+                        name: document.getElementById('name').value, price: parseFloat(document.getElementById('price').value), secao: document.getElementById('secao').value, description: document.getElementById('description').value,
+                        variantes: v, estoqueTotal: calcTotal(v), source: document.getElementById('source').value, isFeatured: document.getElementById('isFeatured').value, imageUrl: img, videoUrl: vid, galeria: gal
+                    };
+                    if(document.getElementById('productId').value) await db.collection("products").doc(id).update(data);
+                    else { data.createdAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection("products").doc(id).set(data); }
+                    
+                    document.getElementById('product-form').reset(); variantsContainer.innerHTML=''; document.getElementById('productId').value=''; oldImageUrl='';
+                    document.getElementById('cancel-edit-btn').style.display="none"; fetchProducts(); showStatus(statusDiv, "Salvo!", "success");
+                } catch(err) { showStatus(statusDiv, err.message, 'error'); }
+            });
+
+            productsList.addEventListener('click', async (e) => {
+                if(e.target.classList.contains('delete-btn') && confirm("Excluir?")) { await db.collection("products").doc(e.target.dataset.id).delete(); fetchProducts(); }
+                if(e.target.classList.contains('edit-btn')) {
+                    let d = await db.collection("products").doc(e.target.dataset.id).get(); let p = d.data();
+                    document.getElementById('productId').value = d.id; document.getElementById('name').value = p.name; document.getElementById('price').value = p.price; document.getElementById('secao').value = p.secao; document.getElementById('description').value = p.description; setVariants(p.variantes); document.getElementById('source').value = p.source; document.getElementById('isFeatured').value = p.isFeatured; oldImageUrl = p.imageUrl; oldVideoUrl = p.videoUrl; oldGaleria = p.galeria||[];
+                    document.getElementById('form-title').textContent = "Editando"; document.getElementById('cancel-edit-btn').style.display="block"; window.scrollTo(0,0);
+                }
+            });
+            document.getElementById('cancel-edit-btn').addEventListener('click', ()=>{document.getElementById('product-form').reset(); variantsContainer.innerHTML=''; document.getElementById('productId').value=''; document.getElementById('cancel-edit-btn').style.display='none';});
+
+            // LOGO & Avaliações & Push
+            const logoForm = document.getElementById('logo-form'); const logoPrev = document.getElementById('logo-preview');
+            async function loadSiteConfig() { try{ const d=await db.collection("configuracoes").doc("siteInfo").get(); if(d.exists) logoPrev.src=d.data().logoUrl; }catch(e){} }
+            logoForm.addEventListener('submit', async (e) => { e.preventDefault(); const f=document.getElementById('logo-upload').files[0]; if(f){ try{ const u=await uploadFile(f,"configuracoes/logo_principal"); await db.collection("configuracoes").doc("siteInfo").set({logoUrl:u},{merge:true}); logoPrev.src=u; }catch(e){} } });
+            
+            // Avaliações
+            const reviewsList = document.getElementById('reviews-list');
+            async function fetchReviews() {
+                try { reviewsList.innerHTML = '...'; const snap = await db.collection('reviews').orderBy('createdAt', 'desc').limit(20).get(); let h = ''; snap.forEach(d => { const r=d.data(); h+=`<tr><td>${r.productName}</td><td>${r.customerName}</td><td>${r.rating}⭐</td><td><button class="delete-btn del-rev" data-id="${d.id}">X</button></td></tr>`; }); reviewsList.innerHTML = h || '<tr><td colspan="4">Vazio</td></tr>'; document.querySelectorAll('.del-rev').forEach(b => b.addEventListener('click', async (e) => { if(confirm("Apagar?")){ await db.collection('reviews').doc(e.target.dataset.id).delete(); fetchReviews(); } })); } catch(e){}
+            }
+            document.getElementById('btn-save-review').addEventListener('click', async () => {
+                const pid = reviewProductSelect.value; const name = document.getElementById('review-name').value; const text = document.getElementById('review-text').value;
+                if(!pid || !name || !text) return alert("Preencha tudo!");
+                try { await db.collection('reviews').add({ productId: pid, productName: reviewProductSelect.options[reviewProductSelect.selectedIndex].text, customerName: name, text: text, rating: parseInt(document.getElementById('review-rating').value), createdAt: firebase.firestore.FieldValue.serverTimestamp() }); showStatus(statusDiv, "Salvo!", "success"); document.getElementById('review-text').value=''; fetchReviews(); } catch(e){ showStatus(statusDiv, e.message, "error"); }
+            });
+
+            // Push
+            async function fetchMessages() { const l=document.getElementById('messages-list'); l.innerHTML=''; (await db.collection('site_messages').orderBy('createdAt','desc').get()).forEach(d=>{l.innerHTML+=`<tr><td>${d.data().title}</td><td>${d.data().body}</td><td><button onclick="db.collection('site_messages').doc('${d.id}').delete();this.closest('tr').remove()">X</button></td></tr>`}); }
+            document.getElementById('btn-send-push').addEventListener('click', async()=>{
+                const t=document.getElementById('push-title').value, b=document.getElementById('push-body').value, l=document.getElementById('push-link').value;
+                if(t&&b){ await db.collection('site_messages').add({title:t,body:b,link:l,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); fetch('/.netlify/functions/send-push',{method:'POST',body:JSON.stringify({title:t,body:b,link:l})}); fetchMessages(); alert('Enviado!'); }
+            });
+        });
     </script>
 </body>
 </html>
