@@ -4,85 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#D4AF37">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>3Marias Joias & Acessórios</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     
     <style>
-        :root { 
-            --primary-color: #D4AF37; /* Dourado */
-            --accent-color: #000; 
-            --text-color: #333; 
-            --bg-color: #fff; 
-            --border-color: #f0f0f0; 
-            --whatsapp-green: #28a745; 
-        }
+        :root { --primary-color: #D4AF37; --accent-color: #000; --text-color: #333; --bg-color: #fff; --whatsapp-green: #28a745; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
         
-        /* --- BOTÃO INSTALAR ANDROID --- */
-        #android-install-btn {
-            display: none; /* Só aparece se o Android permitir */
-            width: 100%;
-            background-color: var(--whatsapp-green);
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 9999;
-        }
+        #android-install-btn { display: none; width: 100%; background-color: var(--whatsapp-green); color: white; border: none; padding: 15px; font-weight: bold; text-align: center; cursor: pointer; z-index: 9999; }
 
-        /* --- CABEÇALHO --- */
-        header { background-color: #fff; text-align: center; padding: 15px; border-bottom: 2px solid var(--primary-color); position: relative; }
+        header { background-color: #fff; text-align: center; padding: 15px; border-bottom: 2px solid var(--primary-color); }
         .header-logo { max-width: 200px; height: auto; display: block; margin: 0 auto; }
         h1 { color: var(--primary-color); font-family: 'Times New Roman', serif; letter-spacing: 2px; margin: 5px 0 0 0; font-size: 1.5em; }
         header p { color: #666; font-size: 0.9em; margin: 5px 0 0 0; }
 
-        /* --- SINO DE NOTIFICAÇÃO --- */
-        #notification-bell { 
-            position: fixed; top: 15px; right: 15px; 
-            font-size: 22px; color: var(--primary-color); 
-            cursor: pointer; z-index: 2000; 
-            background-color: rgba(255, 255, 255, 0.95); 
-            border-radius: 50%; padding: 8px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        #notification-dot {
-            position: absolute; top: 5px; right: 5px;
-            width: 10px; height: 10px;
-            background-color: red; border-radius: 50%;
-            display: none; border: 1px solid white;
-        }
+        #notification-bell { position: fixed; top: 15px; right: 15px; font-size: 22px; color: var(--primary-color); cursor: pointer; z-index: 2000; background-color: rgba(255, 255, 255, 0.95); border-radius: 50%; padding: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        #notification-dot { position: absolute; top: 5px; right: 5px; width: 10px; height: 10px; background-color: red; border-radius: 50%; display: none; border: 1px solid white; }
 
-        /* --- INBOX (CAIXA DE MENSAGENS) --- */
         #inbox-modal { display: none; position: fixed; z-index: 2500; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: start; padding-top: 60px; }
-        .inbox-content { background-color: #fff; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; animation: slideDown 0.3s ease; }
-        @keyframes slideDown { from {transform: translateY(-20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+        .inbox-content { background-color: #fff; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; }
         .inbox-header { background-color: var(--primary-color); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         #inbox-close { cursor: pointer; font-size: 20px; }
         #inbox-list { max-height: 60vh; overflow-y: auto; padding: 0; margin: 0; list-style: none; }
         .inbox-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
-        .inbox-item:hover { background-color: #f9f9f9; }
-        .inbox-title { font-weight: bold; margin-bottom: 5px; color: #333; }
-        .inbox-body { font-size: 0.9em; color: #666; margin-bottom: 8px; }
-        .inbox-date { font-size: 0.75em; color: #aaa; text-align: right; }
-        .inbox-empty { padding: 20px; text-align: center; color: #999; font-style: italic; }
+        .inbox-title { font-weight: bold; margin-bottom: 5px; } .inbox-body { font-size: 0.9em; color: #666; } .inbox-empty { padding: 20px; text-align: center; color: #999; }
 
-        /* --- LOJA --- */
         main { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        
         #search-container { position: relative; max-width: 600px; margin: 0 auto 20px; }
         #search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid #ddd; border-radius: 25px; outline: none; box-sizing: border-box; }
-        #search-input:focus { border-color: var(--primary-color); box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
         .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
         
         #secao-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
@@ -94,46 +45,30 @@
         .filter-button.active { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
 
         #products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; position: relative; display: block; background: #fff; transition: transform 0.2s; }
-        .product-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; display: block; background: #fff; }
         .product-image-container { padding-top: 100%; position: relative; background: #f9f9f9; }
         .product-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .product-info { padding: 12px; }
-        .product-name { font-size: 0.95em; margin: 0 0 5px; line-height: 1.3; height: 2.6em; overflow: hidden; }
+        .product-name { font-size: 0.95em; margin: 0 0 5px; height: 2.6em; overflow: hidden; }
         .product-price { font-weight: bold; color: var(--primary-color); font-size: 1.1em; }
-        
-        .badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 3px; font-size: 0.75em; color: #fff; font-weight: bold; z-index: 10; text-transform: uppercase; }
-        .badge-novo { background: var(--accent-color); } 
-        .badge-esgotado { background: #999; }
+        .badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 3px; font-size: 0.75em; color: #fff; font-weight: bold; z-index: 10; }
+        .badge-novo { background: var(--accent-color); } .badge-esgotado { background: #999; }
         
         footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 0.8em; color: #777; border-top: 1px solid #eee; }
-        #cart-icon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--whatsapp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; transition: transform 0.2s; }
-        #cart-icon:active { transform: scale(0.9); }
+        #cart-icon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--whatsapp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
         #cart-count { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; display: none; border: 2px solid #fff; }
-        
-        #ios-install-banner { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background-color: rgba(255, 255, 255, 0.98); border-top: 1px solid #ccc; padding: 15px; text-align: center; z-index: 2000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); font-size: 0.9em; }
-        #close-ios-banner { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #888; }
-
+        #ios-install-banner { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.98); border-top: 1px solid #ccc; padding: 15px; text-align: center; z-index: 2000; }
+        #close-ios-banner { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; }
         @media (min-width: 768px) { #products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
     </style>
 </head>
 <body>
+    <button id="android-install-btn">📲 Instalar Aplicativo 3Marias</button>
+    <div id="notification-bell"><i class="fas fa-bell"></i><div id="notification-dot"></div></div>
     
-    <button id="android-install-btn">
-        📲 Instalar Aplicativo 3Marias (Clique Aqui)
-    </button>
-
-    <div id="notification-bell">
-        <i class="fas fa-bell"></i>
-        <div id="notification-dot"></div>
-    </div>
-
     <div id="inbox-modal">
         <div class="inbox-content">
-            <div class="inbox-header">
-                <span>Mensagens</span>
-                <span id="inbox-close">&times;</span>
-            </div>
+            <div class="inbox-header"><span>Mensagens</span><span id="inbox-close">&times;</span></div>
             <ul id="inbox-list"></ul>
         </div>
     </div>
@@ -144,11 +79,7 @@
     </header>
 
     <main>
-        <div id="search-container">
-            <input type="text" id="search-input" placeholder="O que você procura?">
-            <i class="fas fa-search search-icon"></i>
-        </div>
-        
+        <div id="search-container"><input type="text" id="search-input" placeholder="O que você procura?"><i class="fas fa-search search-icon"></i></div>
         <div id="secao-filters">
             <button class="secao-button active" data-secao="todos">Todas</button>
             <button class="secao-button" data-secao="aneis">Anéis</button>
@@ -159,33 +90,23 @@
             <button class="secao-button" data-secao="infantil">Infantil</button>
             <button class="secao-button" data-secao="masculino">Masculino</button>
         </div>
-
         <div id="controls">
             <button class="filter-button active" data-filter="pronta-entrega">Pronta Entrega</button>
             <button class="filter-button" data-filter="sob-encomenda">Sob Encomenda</button>
         </div>
-
         <h2 id="collection-title" style="text-align:center; color:#555; margin-bottom:20px; font-size:1.2em; font-weight:normal;">Carregando...</h2>
         <div id="products-grid"></div>
     </main>
     
-    <a id="cart-icon" href="carrinho.html">
-        <i class="fas fa-shopping-bag"></i>
-        <span id="cart-count">0</span>
-    </a>
-    
+    <a id="cart-icon" href="carrinho.html"><i class="fas fa-shopping-bag"></i><span id="cart-count">0</span></a>
     <div id="ios-install-banner"><span id="close-ios-banner">&times;</span><p>Instale nosso App: Toque em <strong>Compartilhar</strong> <i class="fas fa-share-square"></i> e depois em <strong>Adicionar à Tela de Início</strong> <i class="fas fa-plus-square"></i>.</p></div>
-
-    <footer>
-        <p>© 2026 3Marias Joias. Todos os direitos reservados.</p>
-    </footer>
+    <footer><p>© 2026 3Marias Joias.</p></footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
 
     <script>
-        // --- 1. CONFIGURAÇÃO FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyCWYPzaDszTenGqC627aKH5CNaCdIOdoKw",
             authDomain: "marias-joias-db345.firebaseapp.com",
@@ -197,215 +118,103 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- 2. INSTALAÇÃO ANDROID (Lógica do Botão) ---
-        let deferredPrompt;
-        const installBtn = document.getElementById('android-install-btn');
+        // --- LIMPEZA DE BADGE (Número Vermelho) ---
+        function clearBadge() {
+            if ('setAppBadge' in navigator) { navigator.setAppBadge(0).catch(()=>{}); }
+            if ('clearAppBadge' in navigator) { navigator.clearAppBadge().catch(()=>{}); }
+            console.log("Tentando limpar badge...");
+        }
+        // Limpa ao carregar e ao focar no app
+        window.addEventListener('load', clearBadge);
+        window.addEventListener('focus', clearBadge);
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); // Impede o Chrome de tentar instalar sozinho e falhar
-            deferredPrompt = e;
-            installBtn.style.display = 'block'; // Mostra nosso botão verde
-        });
+        // --- INSTALAÇÃO ANDROID ---
+        let deferredPrompt; const installBtn = document.getElementById('android-install-btn');
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
+        installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; } });
 
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
-                }
-                deferredPrompt = null;
-            }
-        });
-
-        // --- 3. NOTIFICAÇÕES (Permissão + Token + Foreground) ---
-        let messaging;
-        try { 
-            if (firebase.messaging.isSupported()) {
-                messaging = firebase.messaging();
-                
-                // ESCUTA MENSAGENS QUANDO O APP ESTÁ ABERTO (FOREGROUND)
-                messaging.onMessage((payload) => {
-                    console.log('Mensagem recebida com App aberto:', payload);
-                    const title = payload.notification.title;
-                    const body = payload.notification.body;
-                    
-                    // Mostra um alerta visual na tela
-                    alert(`🔔 NOVA MENSAGEM!\n\n${title}\n${body}`);
-                    
-                    // Atualiza o sininho (coloca a bolinha vermelha)
-                    document.getElementById('notification-dot').style.display = 'block';
-                });
-            }
-        } catch (e) {
-            console.log("Messaging não suportado neste navegador.");
+        // --- NOTIFICAÇÕES ---
+        let messaging; try { if (firebase.messaging.isSupported()) messaging = firebase.messaging(); } catch (e) {}
+        
+        // Listener para quando o app está aberto (Toca som ou exibe alerta)
+        if(messaging) {
+            messaging.onMessage((payload) => {
+                console.log('Msg em Foreground:', payload);
+                const title = payload.notification.title;
+                const body = payload.notification.body;
+                // Exibe alerta visual
+                alert(`🔔 ${title}\n${body}`);
+                // Atualiza sininho
+                document.getElementById('notification-dot').style.display = 'block';
+                // Tenta limpar badge do sistema
+                clearBadge();
+            });
         }
 
         async function requestPermission() {
             if (!messaging) return;
-            try {
-                // Pede permissão ao navegador
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    // Pega o Token usando a CHAVE VAPID CERTA
-                    const token = await messaging.getToken({ 
-                        vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI' 
-                    });
-                    
-                    if (token) {
-                        // Salva no banco de dados
-                        await db.collection('push_tokens').doc(token).set({
-                            token: token,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            platform: navigator.userAgent // Salva qual é o aparelho (opcional)
-                        });
-                        alert("✅ Notificações Ativadas! Você receberá novidades em breve.");
-                    }
-                } else {
-                    alert("⚠️ Você precisa permitir as notificações nas configurações do site.");
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const token = await messaging.getToken({ vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI' });
+                if (token) {
+                    await db.collection('push_tokens').doc(token).set({ token: token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), platform: navigator.userAgent });
+                    alert("✅ Notificações Ativadas!");
+                    clearBadge();
                 }
-            } catch (e) {
-                console.error("Erro ao pegar token:", e);
-            }
+            } else { alert("⚠️ Ative as notificações nas configurações."); }
         }
 
-        // --- 4. LÓGICA DO SINO E INBOX ---
-        const bell = document.getElementById('notification-bell');
-        const inboxModal = document.getElementById('inbox-modal');
-        const inboxList = document.getElementById('inbox-list');
-
+        // --- SINO & INBOX ---
+        const bell=document.getElementById('notification-bell'), inboxModal=document.getElementById('inbox-modal'), inboxList=document.getElementById('inbox-list');
         bell.addEventListener('click', () => {
-            // Tenta pedir permissão se o usuário nunca clicou antes
-            if (Notification.permission === 'default') {
-                requestPermission();
-            }
-
-            // Abre o modal de mensagens
+            if (Notification.permission === 'default') requestPermission();
             inboxModal.style.display = 'flex';
             carregarMensagens();
-
-            // Limpa badge
-            if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(()=>{});
             document.getElementById('notification-dot').style.display = 'none';
+            clearBadge(); // Limpa número vermelho ao clicar no sino
         });
-
         document.getElementById('inbox-close').addEventListener('click', () => inboxModal.style.display = 'none');
         inboxModal.addEventListener('click', (e) => { if(e.target===inboxModal) inboxModal.style.display = 'none'; });
 
         async function carregarMensagens() {
             inboxList.innerHTML = '<li class="inbox-empty">Carregando...</li>';
-            try {
-                const snap = await db.collection('site_messages').orderBy('createdAt','desc').limit(10).get();
-                inboxList.innerHTML = '';
-                if(snap.empty) { inboxList.innerHTML = '<li class="inbox-empty">Nenhuma mensagem recente.</li>'; return; }
-                
-                snap.forEach(d => {
-                    const m = d.data();
-                    const li = document.createElement('li');
-                    li.className = 'inbox-item';
-                    li.innerHTML = `<div class="inbox-title">${m.title}</div><div class="inbox-body">${m.body}</div>`;
-                    if(m.link) li.addEventListener('click', () => window.location.href = m.link);
-                    inboxList.appendChild(li);
-                });
-            } catch(e) { inboxList.innerHTML = '<li class="inbox-empty">Erro ao carregar.</li>'; }
+            try { const snap = await db.collection('site_messages').orderBy('createdAt','desc').limit(10).get(); inboxList.innerHTML = ''; if(snap.empty) { inboxList.innerHTML = '<li class="inbox-empty">Sem mensagens.</li>'; return; } snap.forEach(d => { const m = d.data(); const li = document.createElement('li'); li.className = 'inbox-item'; li.innerHTML = `<div class="inbox-title">${m.title}</div><div class="inbox-body">${m.body}</div>`; if(m.link) li.addEventListener('click', () => window.location.href = m.link); inboxList.appendChild(li); }); } catch(e) { inboxList.innerHTML = '<li class="inbox-empty">Erro ao carregar.</li>'; }
         }
 
-        // --- 5. LÓGICA DA LOJA (PRODUTOS) ---
-        const grid = document.getElementById('products-grid');
-        const cartCountEl = document.getElementById('cart-count');
-        const secaoButtons = document.querySelectorAll('.secao-button');
-        const filterButtons = document.querySelectorAll('.filter-button');
-        const searchInput = document.getElementById('search-input');
-        
-        let currentFilter = 'pronta-entrega';
-        let currentSecao = 'todos';
+        // --- PRODUTOS ---
+        const grid=document.getElementById('products-grid'), cartCountEl=document.getElementById('cart-count'), secaoButtons=document.querySelectorAll('.secao-button'), filterButtons=document.querySelectorAll('.filter-button'), searchInput=document.getElementById('search-input');
+        let currentFilter='pronta-entrega', currentSecao='todos';
 
         async function fetchProducts() {
-            grid.innerHTML = '<p style="text-align:center; width:100%; color:#888;">Carregando joias...</p>';
+            grid.innerHTML = '<p style="text-align:center;width:100%;color:#888;">Carregando...</p>';
             let q = db.collection("products");
             if (currentSecao !== 'todos') q = q.where("secao", "==", currentSecao);
             q = q.where("source", "==", currentFilter).orderBy("createdAt", "desc");
-            
             try {
-                const snap = await q.get();
-                grid.innerHTML = '';
-                if (snap.empty) { grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px;">Nenhuma joia encontrada.</p>'; return; }
-                
+                const snap = await q.get(); grid.innerHTML = '';
+                if (snap.empty) { grid.innerHTML = '<p style="text-align:center;width:100%;margin-top:30px;">Vazio.</p>'; return; }
                 snap.forEach(doc => {
-                    const p = doc.data();
-                    const id = doc.id;
-                    const preco = parseFloat(p.price).toLocaleString('ja-JP');
-                    let badgeHTML = '';
-                    if (p.isFeatured === 'novo') badgeHTML = '<span class="badge badge-novo">✨ Novidade</span>';
-                    if (p.estoqueTotal <= 0) badgeHTML = '<span class="badge badge-esgotado">Esgotado</span>';
-                    const imagem = p.imageUrl || 'https://via.placeholder.com/400x400';
-
-                    grid.innerHTML += `
-                    <a href="detalhes.html?id=${id}" class="product-card">
-                        ${badgeHTML}
-                        <div class="product-image-container"><img src="${imagem}" class="product-image" loading="lazy"></div>
-                        <div class="product-info"><h3 class="product-name">${p.name}</h3><div class="product-price">¥${preco}</div></div>
-                    </a>`;
+                    const p = doc.data(), id = doc.id, preco = parseFloat(p.price).toLocaleString('ja-JP');
+                    let badgeHTML = ''; if (p.isFeatured === 'novo') badgeHTML = '<span class="badge badge-novo">✨ Novidade</span>'; if (p.estoqueTotal <= 0) badgeHTML = '<span class="badge badge-esgotado">Esgotado</span>';
+                    grid.innerHTML += `<a href="detalhes.html?id=${id}" class="product-card">${badgeHTML}<div class="product-image-container"><img src="${p.imageUrl||'https://via.placeholder.com/400'}" class="product-image" loading="lazy"></div><div class="product-info"><h3 class="product-name">${p.name}</h3><div class="product-price">¥${preco}</div></div></a>`;
                 });
-                
                 const secaoNome = document.querySelector(`.secao-button[data-secao="${currentSecao}"]`).innerText;
                 const filtroNome = document.querySelector(`.filter-button[data-filter="${currentFilter}"]`).innerText;
                 document.getElementById('collection-title').innerText = `${secaoNome} - ${filtroNome}`;
-
                 if(searchInput.value.trim()) filterBySearch(searchInput.value);
-
             } catch (error) { console.error("Erro:", error); }
         }
 
         searchInput.addEventListener('input', (e) => filterBySearch(e.target.value));
-        function filterBySearch(term) {
-            const cards = document.querySelectorAll('.product-card');
-            const lowerTerm = term.toLowerCase();
-            cards.forEach(card => {
-                const name = card.querySelector('.product-name').innerText.toLowerCase();
-                card.style.display = name.includes(lowerTerm) ? 'block' : 'none';
-            });
-        }
-
-        function updateCartIcon() {
-            const cart = JSON.parse(localStorage.getItem('whatsappCart')) || { items: {} };
-            let totalQtd = 0;
-            Object.values(cart.items).forEach(item => totalQtd += item.quantity);
-            if (totalQtd > 0) { cartCountEl.textContent = totalQtd; cartCountEl.style.display = 'flex'; } 
-            else { cartCountEl.style.display = 'none'; }
-        }
-
-        secaoButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                secaoButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active');
-                currentSecao = btn.dataset.secao; fetchProducts();
-            });
-        });
-
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active');
-                currentFilter = btn.dataset.filter; fetchProducts();
-            });
-        });
-
-        // Carregar Logo
-        db.collection("configuracoes").doc("siteInfo").get().then(doc => {
-            if (doc.exists && doc.data().logoUrl) document.getElementById('main-header').innerHTML = `<img src="${doc.data().logoUrl}" class="header-logo" alt="3Marias Joias">`;
-        });
-
-        // Service Worker Reg
+        function filterBySearch(term) { const cards = document.querySelectorAll('.product-card'); const lowerTerm = term.toLowerCase(); cards.forEach(card => { const name = card.querySelector('.product-name').innerText.toLowerCase(); card.style.display = name.includes(lowerTerm) ? 'block' : 'none'; }); }
+        function updateCartIcon() { const cart = JSON.parse(localStorage.getItem('whatsappCart')) || { items: {} }; let totalQtd = 0; Object.values(cart.items).forEach(item => totalQtd += item.quantity); if (totalQtd > 0) { cartCountEl.textContent = totalQtd; cartCountEl.style.display = 'flex'; } else { cartCountEl.style.display = 'none'; } }
+        secaoButtons.forEach(btn => { btn.addEventListener('click', () => { secaoButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentSecao = btn.dataset.secao; fetchProducts(); }); });
+        filterButtons.forEach(btn => { btn.addEventListener('click', () => { filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.filter; fetchProducts(); }); });
+        db.collection("configuracoes").doc("siteInfo").get().then(doc => { if (doc.exists && doc.data().logoUrl) document.getElementById('main-header').innerHTML = `<img src="${doc.data().logoUrl}" class="header-logo" alt="3Marias Joias">`; });
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-
-        // iOS Banner
         const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
-        if (isIos() && !isInStandaloneMode()) {
-            document.getElementById('ios-install-banner').style.display = 'block';
-            document.getElementById('close-ios-banner').addEventListener('click', () => document.getElementById('ios-install-banner').style.display = 'none');
-            document.getElementById('cart-icon').style.bottom = '100px'; 
-        }
-
+        if (isIos() && !isInStandaloneMode()) { document.getElementById('ios-install-banner').style.display = 'block'; document.getElementById('close-ios-banner').addEventListener('click', () => document.getElementById('ios-install-banner').style.display = 'none'); document.getElementById('cart-icon').style.bottom = '100px'; }
         document.addEventListener('DOMContentLoaded', () => { fetchProducts(); updateCartIcon(); });
     </script>
 </body>
