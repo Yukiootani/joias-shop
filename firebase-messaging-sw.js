@@ -13,11 +13,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// FORÇA O SERVICE WORKER A ATUALIZAR (Para o Android largar o cache velho)
+// Força o Android a atualizar o código imediatamente
 self.addEventListener('install', (event) => { self.skipWaiting(); });
 self.addEventListener('activate', (event) => { event.waitUntil(clients.claim()); });
 
-// 1. OUVIR EM SEGUNDO PLANO (TELA BLOQUEADA)
+// OUVIR EM SEGUNDO PLANO
 messaging.onBackgroundMessage((payload) => {
   console.log('[Background] Notificação:', payload);
 
@@ -25,11 +25,13 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
     body: payload.notification.body,
     
-    // 👇 AQUI ESTAVA O ERRO! AGORA USAMOS UM LINK QUE EXISTE:
-    icon: 'https://cdn-icons-png.flaticon.com/512/616/616430.png', // Diamante Dourado
-    badge: 'https://cdn-icons-png.flaticon.com/512/616/616430.png', // Ícone pequeno
+    // 👇 AQUI ESTAVA O ERRO! Flaticon bloqueia o Android.
+    // Usei este link do Imgur que funciona 100%:
+    icon: 'https://i.imgur.com/vA47S8s.png', 
+    badge: 'https://i.imgur.com/vA47S8s.png',
     
     vibrate: [200, 100, 200],
+    tag: 'promo-alert', // Substitui a anterior para não acumular
     data: { 
         url: payload.data?.url || '/' 
     }
@@ -38,7 +40,7 @@ messaging.onBackgroundMessage((payload) => {
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// 2. CLIQUE NA NOTIFICAÇÃO
+// CLIQUE NA NOTIFICAÇÃO
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   event.waitUntil(clients.openWindow(event.notification.data.url || '/'));
