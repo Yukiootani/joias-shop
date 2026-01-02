@@ -13,15 +13,26 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// 1. RECEBER NO BACKGROUND (TELA BLOQUEADA/FECHADA)
+// FORÇAR ATUALIZAÇÃO IMEDIATA (Resolve problema de Cache no Android)
+self.addEventListener('install', (event) => {
+    self.skipWaiting();
+});
+self.addEventListener('activate', (event) => {
+    event.waitUntil(clients.claim());
+});
+
+// 1. RECEBER NO BACKGROUND
 messaging.onBackgroundMessage((payload) => {
   console.log('[Background] Notificação:', payload);
-
+  
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: 'https://i.imgur.com/BIXdM6M.png', // Ícone
-    vibrate: [200, 100, 200], // Vibrar
+    icon: 'https://i.imgur.com/BIXdM6M.png',
+    badge: 'https://i.imgur.com/BIXdM6M.png', // Ícone pequeno na barra
+    vibrate: [200, 100, 200, 100, 200], // Vibração mais forte
+    tag: 'promo-alert', // Substitui notificação antiga para não acumular
+    renotify: true, // Toca o som mesmo se já tiver notificação lá
     data: { 
         url: payload.data?.url || payload.notification?.click_action || '/' 
     }
@@ -30,10 +41,28 @@ messaging.onBackgroundMessage((payload) => {
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// 2. CLIQUE NA NOTIFICAÇÃO (ABRIR SITE)
+// 2. CLIQUE NA NOTIFICAÇÃO
 self.addEventListener('notificationclick', function(event) {
-  event.notification.close();
+  console.log('Notificação clicada');
+  event.notification.close(); // FECHA A NOTIFICAÇÃO (Isso ajuda a sumir o número vermelho)
+
+  // Tenta limpar o Badge (número vermelho)
+  if (navigator.setAppBadge) { navigator.setAppBadge(0); }
+  if (navigator.clearAppBadge) { navigator.clearAppBadge(); }
+
   event.waitUntil(
-    clients.openWindow(event.notification.data.url || '/')
+    clients.matchAll({type: 'window'}).then( windowClients => {
+        // Se o app já estiver aberto, foca nele
+        for (var i = 0; i < windowClients.length; i++) {
+            var client = windowClients[i];
+            if (client.url === event.notification.data.url && 'focus' in client) {
+                return client.focus();
+            }
+        }
+        // Se não, abre nova janela
+        if (clients.openWindow) {
+            return clients.openWindow(event.notification.data.url || '/');
+        }
+    })
   );
 });
