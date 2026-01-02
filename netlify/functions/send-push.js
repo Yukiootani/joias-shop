@@ -1,9 +1,9 @@
 const admin = require("firebase-admin");
 
-// Decodifica a chave que salvamos no painel do Netlify
+// Configura a chave de acesso
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-// Evita iniciar o Firebase várias vezes se já estiver rodando
+// Inicializa o app (apenas se ainda não estiver rodando)
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -11,7 +11,6 @@ if (!admin.apps.length) {
 }
 
 exports.handler = async function(event, context) {
-  // Só aceita método POST
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -19,75 +18,70 @@ exports.handler = async function(event, context) {
   try {
     const data = JSON.parse(event.body);
     const db = admin.firestore();
+    const messaging = admin.messaging(); // Pega o serviço de mensagens novo
 
-    // 1. Busca todos os tokens salvos no banco
+    // 1. Busca os tokens no banco
     const tokensSnapshot = await db.collection("push_tokens").get();
     
     if (tokensSnapshot.empty) {
+      console.log("Nenhum token encontrado.");
       return { statusCode: 200, body: "Nenhum cliente cadastrado." };
     }
 
+    // Coleta apenas os tokens válidos
     const tokens = [];
     tokensSnapshot.forEach((doc) => {
-      // Pega o token seguro
       const t = doc.data().token;
       if (t) tokens.push(t);
     });
 
-    // 2. Prepara a mensagem "GRITANDO" para o Android
+    console.log(`Encontrados ${tokens.length} tokens.`);
+
+    // 2. Prepara a mensagem (NOVO FORMATO V12)
     const message = {
       notification: {
         title: data.title || "Novidade 3Marias!",
         body: data.body || "Confira nossas novas joias.",
       },
-      // Dados extras para o clique funcionar
       data: {
         url: data.link || "/",
-        click_action: "FLUTTER_NOTIFICATION_CLICK" // Truque para alguns Androids antigos
+        click_action: "FLUTTER_NOTIFICATION_CLICK"
       },
-      // CONFIGURAÇÃO CRUCIAL PARA ANDROID 👇
       android: {
-        priority: "high", // Força alta prioridade
+        priority: "high",
         notification: {
-          channelId: "default_channel_id", // Canal padrão
-          priority: "high", // Garante destaque
+          channelId: "default_channel_id",
+          priority: "high",
           defaultSound: true,
-          visibility: "public", // Aparece na tela bloqueada
-          icon: "stock_ticker_update" // Ícone nativo de alerta
+          visibility: "public",
+          icon: "stock_ticker_update"
         }
       },
-      // Configuração para Web
       webpush: {
-        headers: {
-          Urgency: "high"
-        },
+        headers: { Urgency: "high" },
         notification: {
           icon: "https://cdn-icons-png.flaticon.com/512/616/616430.png",
-          requireInteraction: true // Obriga o usuário a fechar ou clicar
+          requireInteraction: true
         },
-        fcm_options: {
-          link: data.link || "/"
-        }
+        fcm_options: { link: data.link || "/" }
       },
-      tokens: tokens,
+      tokens: tokens, // Lista de destinatários
     };
 
-    // 3. Envia para todos (Multicast)
-    const response = await admin.messaging().sendMulticast(message);
+    // 3. ENVIA USANDO O MÉTODO NOVO (sendEachForMulticast)
+    // O método antigo usava "/batch" que foi desligado. Este usa HTTP v1.
+    const response = await messaging.sendEachForMulticast(message);
     
-    console.log("Sucesso:", response.successCount);
-    console.log("Falhas:", response.failureCount);
+    console.log(response.successCount + ' mensagens enviadas com sucesso');
+    console.log(response.failureCount + ' falharam');
 
-    // Limpa tokens inválidos se houver (Opcional, mas bom para limpeza)
+    // (Opcional) Logar erros específicos se houver falhas
     if (response.failureCount > 0) {
-      const failedTokens = [];
       response.responses.forEach((resp, idx) => {
         if (!resp.success) {
-          failedTokens.push(tokens[idx]);
+          console.log(`Erro no token ${tokens[idx]}:`, resp.error);
         }
       });
-      // Aqui poderíamos deletar os tokens ruins do banco, mas vamos só logar por enquanto
-      console.log("Tokens falhos:", failedTokens);
     }
 
     return {
@@ -96,7 +90,7 @@ exports.handler = async function(event, context) {
     };
 
   } catch (error) {
-    console.error("Erro no envio:", error);
+    console.error("Erro CRÍTICO no envio:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),
