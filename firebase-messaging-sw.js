@@ -13,28 +13,25 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// FORÇAR ATUALIZAÇÃO IMEDIATA (Resolve problema de Cache no Android)
-self.addEventListener('install', (event) => {
-    self.skipWaiting();
-});
-self.addEventListener('activate', (event) => {
-    event.waitUntil(clients.claim());
-});
+// FORÇA O SERVICE WORKER A ATUALIZAR (Para o Android largar o cache velho)
+self.addEventListener('install', (event) => { self.skipWaiting(); });
+self.addEventListener('activate', (event) => { event.waitUntil(clients.claim()); });
 
-// 1. RECEBER NO BACKGROUND
+// 1. OUVIR EM SEGUNDO PLANO (TELA BLOQUEADA)
 messaging.onBackgroundMessage((payload) => {
   console.log('[Background] Notificação:', payload);
-  
+
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: 'https://i.imgur.com/BIXdM6M.png',
-    badge: 'https://i.imgur.com/BIXdM6M.png', // Ícone pequeno na barra
-    vibrate: [200, 100, 200, 100, 200], // Vibração mais forte
-    tag: 'promo-alert', // Substitui notificação antiga para não acumular
-    renotify: true, // Toca o som mesmo se já tiver notificação lá
+    
+    // 👇 AQUI ESTAVA O ERRO! AGORA USAMOS UM LINK QUE EXISTE:
+    icon: 'https://cdn-icons-png.flaticon.com/512/616/616430.png', // Diamante Dourado
+    badge: 'https://cdn-icons-png.flaticon.com/512/616/616430.png', // Ícone pequeno
+    
+    vibrate: [200, 100, 200],
     data: { 
-        url: payload.data?.url || payload.notification?.click_action || '/' 
+        url: payload.data?.url || '/' 
     }
   };
 
@@ -43,26 +40,6 @@ messaging.onBackgroundMessage((payload) => {
 
 // 2. CLIQUE NA NOTIFICAÇÃO
 self.addEventListener('notificationclick', function(event) {
-  console.log('Notificação clicada');
-  event.notification.close(); // FECHA A NOTIFICAÇÃO (Isso ajuda a sumir o número vermelho)
-
-  // Tenta limpar o Badge (número vermelho)
-  if (navigator.setAppBadge) { navigator.setAppBadge(0); }
-  if (navigator.clearAppBadge) { navigator.clearAppBadge(); }
-
-  event.waitUntil(
-    clients.matchAll({type: 'window'}).then( windowClients => {
-        // Se o app já estiver aberto, foca nele
-        for (var i = 0; i < windowClients.length; i++) {
-            var client = windowClients[i];
-            if (client.url === event.notification.data.url && 'focus' in client) {
-                return client.focus();
-            }
-        }
-        // Se não, abre nova janela
-        if (clients.openWindow) {
-            return clients.openWindow(event.notification.data.url || '/');
-        }
-    })
-  );
+  event.notification.close();
+  event.waitUntil(clients.openWindow(event.notification.data.url || '/'));
 });
