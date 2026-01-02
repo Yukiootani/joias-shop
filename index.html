@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>3Marias Joias & Acessórios</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -118,60 +120,69 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- LIMPEZA DE BADGE (Número Vermelho) ---
-        function clearBadge() {
-            if ('setAppBadge' in navigator) { navigator.setAppBadge(0).catch(()=>{}); }
-            if ('clearAppBadge' in navigator) { navigator.clearAppBadge().catch(()=>{}); }
-            console.log("Tentando limpar badge...");
-        }
-        // Limpa ao carregar e ao focar no app
-        window.addEventListener('load', clearBadge);
-        window.addEventListener('focus', clearBadge);
-
-        // --- INSTALAÇÃO ANDROID ---
+        // --- LÓGICA DE INSTALAÇÃO ANDROID ---
         let deferredPrompt; const installBtn = document.getElementById('android-install-btn');
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
         installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; } });
 
-        // --- NOTIFICAÇÕES ---
-        let messaging; try { if (firebase.messaging.isSupported()) messaging = firebase.messaging(); } catch (e) {}
-        
-        // Listener para quando o app está aberto (Toca som ou exibe alerta)
-        if(messaging) {
-            messaging.onMessage((payload) => {
-                console.log('Msg em Foreground:', payload);
-                const title = payload.notification.title;
-                const body = payload.notification.body;
-                // Exibe alerta visual
-                alert(`🔔 ${title}\n${body}`);
-                // Atualiza sininho
-                document.getElementById('notification-dot').style.display = 'block';
-                // Tenta limpar badge do sistema
-                clearBadge();
-            });
-        }
+        // --- LÓGICA DE NOTIFICAÇÃO BLINDADA ---
+        let messaging; 
+        try { 
+            if (firebase.messaging.isSupported()) {
+                messaging = firebase.messaging();
+                // Ouve quando o app está aberto
+                messaging.onMessage((payload) => {
+                    console.log('Mensagem em Foreground:', payload);
+                    alert(`🔔 ${payload.notification.title}\n${payload.notification.body}`);
+                    document.getElementById('notification-dot').style.display = 'block';
+                });
+            }
+        } catch (e) { console.log("Push não suportado."); }
 
         async function requestPermission() {
             if (!messaging) return;
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                const token = await messaging.getToken({ vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI' });
-                if (token) {
-                    await db.collection('push_tokens').doc(token).set({ token: token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), platform: navigator.userAgent });
-                    alert("✅ Notificações Ativadas!");
-                    clearBadge();
+            try {
+                // 1. Pede Permissão
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    
+                    // 2. REGISTRA O ARQUIVO CORRETO ANTES DE PEDIR O TOKEN (CORREÇÃO ANDROID)
+                    const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+                    await navigator.serviceWorker.ready;
+
+                    // 3. Pede o Token ligando ao registro acima
+                    const token = await messaging.getToken({ 
+                        vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI',
+                        serviceWorkerRegistration: registration 
+                    });
+                    
+                    if (token) {
+                        await db.collection('push_tokens').doc(token).set({
+                            token: token,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            platform: navigator.userAgent
+                        });
+                        alert("✅ Notificações Ativadas!");
+                        if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(()=>{});
+                    }
+                } else {
+                    alert("⚠️ Permissão bloqueada. Vá nas configurações do site e desbloqueie.");
                 }
-            } else { alert("⚠️ Ative as notificações nas configurações."); }
+            } catch (e) {
+                console.error("Erro token:", e);
+                alert("Erro ao ativar notificações: " + e.message);
+            }
         }
 
         // --- SINO & INBOX ---
         const bell=document.getElementById('notification-bell'), inboxModal=document.getElementById('inbox-modal'), inboxList=document.getElementById('inbox-list');
         bell.addEventListener('click', () => {
+            // Tenta ativar se ainda não tiver ativado
             if (Notification.permission === 'default') requestPermission();
+            
             inboxModal.style.display = 'flex';
             carregarMensagens();
             document.getElementById('notification-dot').style.display = 'none';
-            clearBadge(); // Limpa número vermelho ao clicar no sino
         });
         document.getElementById('inbox-close').addEventListener('click', () => inboxModal.style.display = 'none');
         inboxModal.addEventListener('click', (e) => { if(e.target===inboxModal) inboxModal.style.display = 'none'; });
@@ -211,7 +222,14 @@
         secaoButtons.forEach(btn => { btn.addEventListener('click', () => { secaoButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentSecao = btn.dataset.secao; fetchProducts(); }); });
         filterButtons.forEach(btn => { btn.addEventListener('click', () => { filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.filter; fetchProducts(); }); });
         db.collection("configuracoes").doc("siteInfo").get().then(doc => { if (doc.exists && doc.data().logoUrl) document.getElementById('main-header').innerHTML = `<img src="${doc.data().logoUrl}" class="header-logo" alt="3Marias Joias">`; });
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+        
+        // --- SERVICE WORKER GERAL (PWA) ---
+        if ('serviceWorker' in navigator) {
+            // Registra um sw.js vazio ou o próprio firebase-messaging para cache básico, 
+            // mas o importante é o registro dentro da função requestPermission
+             navigator.serviceWorker.register('firebase-messaging-sw.js');
+        }
+
         const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
         if (isIos() && !isInStandaloneMode()) { document.getElementById('ios-install-banner').style.display = 'block'; document.getElementById('close-ios-banner').addEventListener('click', () => document.getElementById('ios-install-banner').style.display = 'none'); document.getElementById('cart-icon').style.bottom = '100px'; }
