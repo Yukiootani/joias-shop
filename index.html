@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#D4AF37">
+    <meta name="theme-color" content="#FF007F">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>3Marias Joias & Acessórios</title>
@@ -12,65 +12,170 @@
     <link rel="manifest" href="manifest.json">
     
     <style>
-        :root { --primary-color: #D4AF37; --accent-color: #000; --text-color: #333; --bg-color: #fff; --whatsapp-green: #28a745; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
+        :root { 
+            /* --- NOVA PALETA DE CORES --- */
+            --rosa-shock: #FF007F;  /* Principal */
+            --dourado: #D4AF37;     /* Luxo / Preços */
+            --prata: #f4f4f4;       /* Fundo suave */
+            --prata-escuro: #aaa;   /* Ícones inativos */
+            --text-color: #333; 
+            --bg-color: #fff; 
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            padding-bottom: 80px; 
+        }
         
-        #android-install-btn { display: none; width: 100%; background-color: var(--whatsapp-green); color: white; border: none; padding: 15px; font-weight: bold; text-align: center; cursor: pointer; z-index: 9999; }
+        /* Botão Instalar (Agora Rosa Shock) */
+        #android-install-btn { 
+            display: none; 
+            width: 100%; 
+            background: linear-gradient(45deg, var(--rosa-shock), #ff66b2); /* Degradê Rosa */
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            font-weight: bold; 
+            text-align: center; 
+            cursor: pointer; 
+            z-index: 9999; 
+            box-shadow: 0 4px 10px rgba(255, 0, 127, 0.3);
+        }
 
-        header { background-color: #fff; text-align: center; padding: 15px; border-bottom: 2px solid var(--primary-color); }
+        /* Cabeçalho com toque Dourado */
+        header { 
+            background-color: #fff; 
+            text-align: center; 
+            padding: 15px; 
+            border-bottom: 3px solid var(--dourado); /* Borda Dourada */
+            position: relative; 
+        }
         .header-logo { max-width: 200px; height: auto; display: block; margin: 0 auto; }
-        h1 { color: var(--primary-color); font-family: 'Times New Roman', serif; letter-spacing: 2px; margin: 5px 0 0 0; font-size: 1.5em; }
-        header p { color: #666; font-size: 0.9em; margin: 5px 0 0 0; }
+        
+        h1 { 
+            color: var(--rosa-shock); /* Título Rosa */
+            font-family: 'Times New Roman', serif; 
+            letter-spacing: 2px; 
+            margin: 5px 0 0 0; 
+            font-size: 1.5em; 
+            text-transform: uppercase;
+        }
+        header p { color: #888; font-size: 0.9em; margin: 5px 0 0 0; font-style: italic; }
 
-        #notification-bell { position: fixed; top: 15px; right: 15px; font-size: 22px; color: var(--primary-color); cursor: pointer; z-index: 2000; background-color: rgba(255, 255, 255, 0.95); border-radius: 50%; padding: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        #notification-dot { position: absolute; top: 5px; right: 5px; width: 10px; height: 10px; background-color: red; border-radius: 50%; display: none; border: 1px solid white; }
+        /* Sino (Agora Dourado com Bolinha Rosa) */
+        #notification-bell { 
+            position: fixed; top: 15px; right: 15px; 
+            font-size: 22px; color: var(--dourado); 
+            cursor: pointer; z-index: 2000; 
+            background-color: #fff; 
+            border: 1px solid var(--prata-escuro);
+            border-radius: 50%; padding: 8px; 
+            width: 40px; height: 40px; 
+            display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        }
+        #notification-dot { 
+            position: absolute; top: 5px; right: 5px; 
+            width: 10px; height: 10px; 
+            background-color: var(--rosa-shock); 
+            border-radius: 50%; display: none; border: 1px solid white; 
+        }
 
+        /* Inbox Modal */
         #inbox-modal { display: none; position: fixed; z-index: 2500; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: start; padding-top: 60px; }
-        .inbox-content { background-color: #fff; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; }
-        .inbox-header { background-color: var(--primary-color); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .inbox-content { background-color: #fff; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid var(--dourado); }
+        .inbox-header { background-color: var(--rosa-shock); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         #inbox-close { cursor: pointer; font-size: 20px; }
         #inbox-list { max-height: 60vh; overflow-y: auto; padding: 0; margin: 0; list-style: none; }
         .inbox-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
-        .inbox-title { font-weight: bold; margin-bottom: 5px; } .inbox-body { font-size: 0.9em; color: #666; } .inbox-empty { padding: 20px; text-align: center; color: #999; }
+        .inbox-title { font-weight: bold; margin-bottom: 5px; color: var(--rosa-shock); } 
+        .inbox-body { font-size: 0.9em; color: #666; } 
+        .inbox-empty { padding: 20px; text-align: center; color: #999; }
 
         main { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        #search-container { position: relative; max-width: 600px; margin: 0 auto 20px; }
-        #search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid #ddd; border-radius: 25px; outline: none; box-sizing: border-box; }
-        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
         
+        /* Busca com borda Rosa ao focar */
+        #search-container { position: relative; max-width: 600px; margin: 0 auto 20px; }
+        #search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid #ddd; border-radius: 25px; outline: none; box-sizing: border-box; background: var(--prata); }
+        #search-input:focus { border-color: var(--rosa-shock); background: #fff; box-shadow: 0 0 5px rgba(255, 0, 127, 0.2); }
+        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--prata-escuro); }
+        
+        /* Filtros e Botões */
         #secao-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .secao-button { background: #fff; color: #555; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 0.9em; }
-        .secao-button.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); font-weight: bold; }
+        .secao-button { 
+            background: #fff; color: #555; 
+            border: 1px solid #ddd; padding: 8px 15px; 
+            border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 0.9em; 
+        }
+        .secao-button.active { 
+            background: var(--rosa-shock); 
+            color: #fff; 
+            border-color: var(--rosa-shock); 
+            font-weight: bold; 
+            box-shadow: 0 3px 8px rgba(255, 0, 127, 0.3);
+        }
         
         #controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .filter-button { background: #f9f9f9; padding: 10px 20px; border-radius: 20px; border: 1px solid #ccc; cursor: pointer; font-size: 0.9em; font-weight: 600; }
-        .filter-button.active { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
+        .filter-button { background: var(--prata); padding: 10px 20px; border-radius: 20px; border: 1px solid #ccc; cursor: pointer; font-size: 0.9em; font-weight: 600; }
+        .filter-button.active { 
+            background: var(--dourado); 
+            color: #fff; 
+            border-color: var(--dourado); 
+        }
 
+        /* Cards de Produto */
         #products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; display: block; background: #fff; }
-        .product-image-container { padding-top: 100%; position: relative; background: #f9f9f9; }
+        .product-card { 
+            border: 1px solid #eee; border-radius: 8px; overflow: hidden; 
+            text-decoration: none; color: inherit; display: block; background: #fff; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .product-image-container { padding-top: 100%; position: relative; background: var(--prata); }
         .product-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .product-info { padding: 12px; }
-        .product-name { font-size: 0.95em; margin: 0 0 5px; height: 2.6em; overflow: hidden; }
-        .product-price { font-weight: bold; color: var(--primary-color); font-size: 1.1em; }
-        .badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 3px; font-size: 0.75em; color: #fff; font-weight: bold; z-index: 10; }
-        .badge-novo { background: var(--accent-color); } .badge-esgotado { background: #999; }
+        .product-name { font-size: 0.95em; margin: 0 0 5px; height: 2.6em; overflow: hidden; color: #444; }
+        .product-price { 
+            font-weight: bold; 
+            color: var(--dourado); /* Preço Dourado */
+            font-size: 1.2em; 
+        }
         
-        footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 0.8em; color: #777; border-top: 1px solid #eee; }
-        #cart-icon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--whatsapp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
-        #cart-count { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; display: none; border: 2px solid #fff; }
-        #ios-install-banner { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.98); border-top: 1px solid #ccc; padding: 15px; text-align: center; z-index: 2000; }
-        #close-ios-banner { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; }
+        /* Badges */
+        .badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 3px; font-size: 0.75em; color: #fff; font-weight: bold; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .badge-novo { background: var(--rosa-shock); } 
+        .badge-esgotado { background: var(--prata-escuro); }
+        
+        footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 0.8em; color: #777; border-top: 1px solid #eee; background: var(--prata); }
+        
+        /* Carrinho Flutuante Rosa */
+        #cart-icon { 
+            position: fixed; bottom: 20px; right: 20px; 
+            width: 60px; height: 60px; 
+            background: linear-gradient(135deg, var(--rosa-shock), #d10068); 
+            color: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 24px; 
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); 
+            z-index: 1000; text-decoration: none; border: 2px solid white;
+        }
+        #cart-count { position: absolute; top: -5px; right: -5px; background: var(--dourado); color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; display: none; border: 2px solid #fff; }
+        
+        #ios-install-banner { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.98); border-top: 1px solid var(--dourado); padding: 15px; text-align: center; z-index: 2000; }
+        #close-ios-banner { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: var(--rosa-shock); }
+
         @media (min-width: 768px) { #products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
     </style>
 </head>
 <body>
-    <button id="android-install-btn">📲 Instalar Aplicativo 3Marias</button>
+    <button id="android-install-btn">📲 Instalar App 3Marias (Rosa)</button>
     <div id="notification-bell"><i class="fas fa-bell"></i><div id="notification-dot"></div></div>
     
     <div id="inbox-modal">
         <div class="inbox-content">
-            <div class="inbox-header"><span>Mensagens</span><span id="inbox-close">&times;</span></div>
+            <div class="inbox-header"><span>Mensagens VIP</span><span id="inbox-close">&times;</span></div>
             <ul id="inbox-list"></ul>
         </div>
     </div>
@@ -81,7 +186,7 @@
     </header>
 
     <main>
-        <div id="search-container"><input type="text" id="search-input" placeholder="O que você procura?"><i class="fas fa-search search-icon"></i></div>
+        <div id="search-container"><input type="text" id="search-input" placeholder="Buscar joia..."><i class="fas fa-search search-icon"></i></div>
         <div id="secao-filters">
             <button class="secao-button active" data-secao="todos">Todas</button>
             <button class="secao-button" data-secao="aneis">Anéis</button>
@@ -96,12 +201,14 @@
             <button class="filter-button active" data-filter="pronta-entrega">Pronta Entrega</button>
             <button class="filter-button" data-filter="sob-encomenda">Sob Encomenda</button>
         </div>
-        <h2 id="collection-title" style="text-align:center; color:#555; margin-bottom:20px; font-size:1.2em; font-weight:normal;">Carregando...</h2>
+        <h2 id="collection-title" style="text-align:center; color: #888; margin-bottom:20px; font-size:1.2em; font-weight:normal;">Carregando...</h2>
         <div id="products-grid"></div>
     </main>
     
     <a id="cart-icon" href="carrinho.html"><i class="fas fa-shopping-bag"></i><span id="cart-count">0</span></a>
+    
     <div id="ios-install-banner"><span id="close-ios-banner">&times;</span><p>Instale nosso App: Toque em <strong>Compartilhar</strong> <i class="fas fa-share-square"></i> e depois em <strong>Adicionar à Tela de Início</strong> <i class="fas fa-plus-square"></i>.</p></div>
+    
     <footer><p>© 2026 3Marias Joias.</p></footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -130,10 +237,9 @@
         try { 
             if (firebase.messaging.isSupported()) {
                 messaging = firebase.messaging();
-                // Ouve quando o app está aberto
                 messaging.onMessage((payload) => {
                     console.log('Mensagem em Foreground:', payload);
-                    alert(`🔔 ${payload.notification.title}\n${payload.notification.body}`);
+                    alert(`💎 ${payload.notification.title}\n${payload.notification.body}`);
                     document.getElementById('notification-dot').style.display = 'block';
                 });
             }
@@ -142,20 +248,14 @@
         async function requestPermission() {
             if (!messaging) return;
             try {
-                // 1. Pede Permissão
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
-                    
-                    // 2. REGISTRA O ARQUIVO CORRETO ANTES DE PEDIR O TOKEN (CORREÇÃO ANDROID)
                     const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
                     await navigator.serviceWorker.ready;
-
-                    // 3. Pede o Token ligando ao registro acima
                     const token = await messaging.getToken({ 
                         vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI',
                         serviceWorkerRegistration: registration 
                     });
-                    
                     if (token) {
                         await db.collection('push_tokens').doc(token).set({
                             token: token,
@@ -168,18 +268,13 @@
                 } else {
                     alert("⚠️ Permissão bloqueada. Vá nas configurações do site e desbloqueie.");
                 }
-            } catch (e) {
-                console.error("Erro token:", e);
-                alert("Erro ao ativar notificações: " + e.message);
-            }
+            } catch (e) { console.error("Erro token:", e); alert("Erro ao ativar notificações: " + e.message); }
         }
 
         // --- SINO & INBOX ---
         const bell=document.getElementById('notification-bell'), inboxModal=document.getElementById('inbox-modal'), inboxList=document.getElementById('inbox-list');
         bell.addEventListener('click', () => {
-            // Tenta ativar se ainda não tiver ativado
             if (Notification.permission === 'default') requestPermission();
-            
             inboxModal.style.display = 'flex';
             carregarMensagens();
             document.getElementById('notification-dot').style.display = 'none';
@@ -223,13 +318,7 @@
         filterButtons.forEach(btn => { btn.addEventListener('click', () => { filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.filter; fetchProducts(); }); });
         db.collection("configuracoes").doc("siteInfo").get().then(doc => { if (doc.exists && doc.data().logoUrl) document.getElementById('main-header').innerHTML = `<img src="${doc.data().logoUrl}" class="header-logo" alt="3Marias Joias">`; });
         
-        // --- SERVICE WORKER GERAL (PWA) ---
-        if ('serviceWorker' in navigator) {
-            // Registra um sw.js vazio ou o próprio firebase-messaging para cache básico, 
-            // mas o importante é o registro dentro da função requestPermission
-             navigator.serviceWorker.register('firebase-messaging-sw.js');
-        }
-
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('firebase-messaging-sw.js');
         const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
         if (isIos() && !isInStandaloneMode()) { document.getElementById('ios-install-banner').style.display = 'block'; document.getElementById('close-ios-banner').addEventListener('click', () => document.getElementById('ios-install-banner').style.display = 'none'); document.getElementById('cart-icon').style.bottom = '100px'; }
