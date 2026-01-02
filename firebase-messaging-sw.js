@@ -13,13 +13,27 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
+// Esta função roda quando o app está FECHADO ou em SEGUNDO PLANO
 messaging.onBackgroundMessage((payload) => {
+  console.log('[Background] Notificação recebida:', payload);
+
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: 'https://i.imgur.com/BIXdM6M.png', // Pode trocar pelo logo da joalheria se tiver
-    tag: 'push-alert-' + Date.now(),
-    data: { url: payload.notification.click_action || '/' }
+    icon: 'https://i.imgur.com/BIXdM6M.png', // Ícone da notificação
+    vibrate: [200, 100, 200],
+    data: {
+        url: payload.data?.url || payload.notification?.click_action || '/'
+    }
   };
+
   return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Clique na notificação abre o site
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow(event.notification.data.url || '/')
+  );
 });
