@@ -1,71 +1,101 @@
+/* --- CONFIGURAÇÕES GERAIS --- */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+html, body { width: 100%; overflow-x: hidden; font-family: 'Montserrat', sans-serif; background-color: #fff; color: #333; }
+body { padding-bottom: 120px; }
+
 :root {
-    --gold: #D4AF37;       /* Dourado */
-    --baby-pink: #FFF0F5;  /* Rosa Bebê */
-    --silver: #C0C0C0;     /* Prata */
-    --text: #333;
-    --white: #fff;
+    --primary: #333333;        /* Texto Escuro Elegante */
+    --gold: #D4AF37;           /* Dourado Principal */
+    --gold-light: #F4E5BE;     /* Dourado Claro (Fundo) */
+    --baby-pink: #FFF0F5;      /* Rosa Bebê (Fundo Suave) */
+    --silver: #C0C0C0;         /* Prata */
+    --whatsapp: #25D366;
     --font-title: 'Playfair Display', serif;
-    --font-body: 'Montserrat', sans-serif;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body { font-family: var(--font-body); background-color: var(--white); color: var(--text); }
-
-/* Header */
+/* --- HEADER --- */
 header {
-    padding: 1.5rem 2rem;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid var(--baby-pink);
-    position: sticky; top: 0; background: var(--white); z-index: 10;
-}
-.logo { font-family: var(--font-title); font-size: 1.5rem; font-weight: 700; }
-.logo span { color: var(--gold); }
-.cart-icon { position: relative; cursor: pointer; color: var(--gold); font-size: 1.2rem; }
-#cart-count {
-    position: absolute; top: -8px; right: -8px;
-    background: var(--text); color: var(--white);
-    font-size: 0.7rem; padding: 2px 5px; border-radius: 50%;
+    background-color: #fff;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border-bottom: 4px solid var(--baby-pink);
+    position: sticky; top: 0; z-index: 100;
 }
 
-/* Hero */
-.hero {
-    background-color: var(--baby-pink);
-    height: 300px;
-    display: flex; align-items: center; justify-content: center; text-align: center;
-    margin-bottom: 3rem; border-bottom: 5px solid var(--gold);
+.header-logo h1 {
+    font-family: var(--font-title);
+    font-size: 2rem;
+    color: var(--primary);
+    letter-spacing: 1px;
 }
-.hero h2 { font-family: var(--font-title); font-size: 2.5rem; color: var(--gold); }
+.header-logo span { color: var(--gold); }
+.header-sub { font-size: 0.75em; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
 
-/* Grid */
-.container { max-width: 1000px; margin: 0 auto; padding: 0 1rem; }
-.section-title { text-align: center; font-family: var(--font-title); margin-bottom: 2rem; color: var(--text); }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; padding-bottom: 4rem; }
+/* --- BOTÕES E FILTROS --- */
+#search-container { position: relative; margin: 20px auto; width: 90%; max-width: 600px; }
+#search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid var(--gold-light); border-radius: 30px; outline: none; background: var(--baby-pink); }
+.search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--gold); }
 
-.card { border: 1px solid #eee; padding: 1rem; text-align: center; transition: 0.3s; }
-.card:hover { border-color: var(--gold); transform: translateY(-5px); }
-.img-placeholder { width: 100%; height: 200px; background-color: var(--baby-pink); object-fit: cover; margin-bottom: 1rem; }
-.price { display: block; color: var(--gold); font-weight: bold; margin: 0.5rem 0; }
+#secao-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 0; padding: 0 10px; }
+.secao-button {
+    background: #fff; color: var(--primary); padding: 8px 16px; border-radius: 20px; 
+    border: 1px solid #eee; font-size: 0.85em; cursor: pointer; transition: 0.3s;
+}
+.secao-button.active { background-color: var(--gold); color: #fff; border-color: var(--gold); }
+
+#controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+.filter-button {
+    background: transparent; color: var(--primary); padding: 8px 12px; 
+    border: 1px solid var(--silver); border-radius: 4px; font-size: 0.75em; text-transform: uppercase;
+}
+.filter-button.active { background-color: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* --- GRID DE PRODUTOS --- */
+.container { max-width: 1000px; margin: 0 auto; padding: 0 15px; }
+#products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+
+.product-card {
+    background: #fff; border: 1px solid #f0f0f0; border-radius: 8px; overflow: hidden;
+    display: flex; flex-direction: column; position: relative; transition: 0.3s;
+}
+.product-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+
+.product-image-container { width: 100%; padding-top: 100%; position: relative; background: var(--baby-pink); }
+.product-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.product-info { padding: 12px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.product-name { font-family: var(--font-title); font-size: 1rem; margin-bottom: 5px; color: var(--primary); }
+.product-price { font-weight: 700; color: var(--gold); margin-bottom: 10px; display: block; }
 
 .btn-add {
-    background: var(--white); border: 1px solid var(--silver);
-    padding: 8px 16px; cursor: pointer; text-transform: uppercase;
-    font-size: 0.8rem; transition: 0.3s;
+    background: #fff; border: 1px solid var(--gold); color: var(--gold);
+    width: 100%; padding: 8px; text-transform: uppercase; font-size: 0.75em; cursor: pointer; font-weight: bold;
 }
-.btn-add:hover { background: var(--gold); color: var(--white); border-color: var(--gold); }
+.btn-add:hover { background: var(--gold); color: #fff; }
 
-/* Modal Corrigido */
-.modal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5); z-index: 20;
-    display: flex; justify-content: flex-end;
+/* --- CARRINHO & MODAL --- */
+#cart-icon {
+    position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+    background-color: var(--primary); color: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 900;
 }
-.modal-content { background: var(--white); width: 350px; height: 100%; padding: 2rem; display: flex; flex-direction: column; }
-.modal-header { display: flex; justify-content: space-between; margin-bottom: 2rem; }
-.close { cursor: pointer; font-size: 1.5rem; }
-.cart-item { display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
-.total { margin-top: auto; font-size: 1.2rem; font-weight: bold; border-top: 2px solid var(--gold); padding-top: 1rem; margin-bottom: 1rem; }
-.btn-whatsapp { background: #25D366; color: white; border: none; padding: 1rem; width: 100%; cursor: pointer; font-weight: bold; }
+#cart-count {
+    position: absolute; top: 0; right: 0; background: var(--gold); color: #fff;
+    border-radius: 50%; width: 22px; height: 22px; font-size: 12px;
+    display: flex; align-items: center; justify-content: center; border: 2px solid #fff;
+}
 
-/* REGRA DE SEGURANÇA: Ocultar DEPOIS de definir o modal */
-.hidden { display: none !important; }
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: flex-end; }
+.modal.show { display: flex; }
+.modal-content { background: #fff; width: 100%; max-width: 400px; height: 100%; padding: 20px; display: flex; flex-direction: column; animation: slideIn 0.3s; }
+@keyframes slideIn { from {transform: translateX(100%)} to {transform: translateX(0)} }
+
+.modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; font-size: 0.9em; }
+.btn-whatsapp { background: var(--whatsapp); color: #fff; border: none; padding: 15px; width: 100%; margin-top: auto; font-weight: bold; cursor: pointer; border-radius: 5px; }
+
+/* Badge de Novidade/Esgotado */
+.badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; font-size: 0.6em; font-weight: bold; color: #fff; text-transform: uppercase; z-index: 10; }
+.badge-novo { background: var(--gold); }
+.badge-esgotado { background: #999; }
