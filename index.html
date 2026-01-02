@@ -2,81 +2,130 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>3 Marias Joias | Oficial</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#D4AF37">
+    <title>Joias & Acessórios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root { --primary-color: #D4AF37; /* Dourado */ --accent-color: #000; --text-color: #333; --bg-color: #fff; --border-color: #f0f0f0; --whatsapp-green: #28a745; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
+        header { background-color: #fff; text-align: center; padding: 10px; border-bottom: 2px solid var(--primary-color); }
+        h1 { color: var(--primary-color); font-family: 'Times New Roman', serif; letter-spacing: 2px; margin: 0; }
+        
+        main { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        #search-container { position: relative; max-width: 600px; margin: 0 auto 20px; }
+        #search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
+        #search-input:focus { border-color: var(--primary-color); }
+        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+        
+        #secao-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .secao-button { background: #fff; color: #555; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .secao-button.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); font-weight: bold; }
+        
+        #controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .filter-button { background: #f9f9f9; padding: 10px 20px; border-radius: 20px; border: 1px solid #ccc; cursor: pointer; }
+        .filter-button.active { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
+
+        #products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; position: relative; display: block; }
+        .product-image-container { padding-top: 100%; position: relative; background: #f4f4f4; } /* 1:1 Square for Jewelry */
+        .product-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .product-info { padding: 10px; }
+        .product-name { font-size: 0.9em; margin: 0 0 5px; }
+        .product-price { font-weight: bold; color: var(--primary-color); font-size: 1.1em; }
+        
+        .badge { position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: 3px; font-size: 0.8em; color: #fff; font-weight: bold; z-index: 10; }
+        .badge-novo { background: var(--accent-color); } .badge-esgotado { background: #999; }
+
+        footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 0.8em; color: #777; border-top: 1px solid #eee; }
+        #cart-icon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--whatsapp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
+        #cart-count { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; display: none; }
+        
+        @media (min-width: 768px) { #products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
+    </style>
 </head>
 <body>
-
     <header id="main-header">
-        <div class="header-logo">
-            <h1>3 Marias <span>Joias</span></h1>
-        </div>
-        <div class="header-sub">Elegância e Sofisticação</div>
+        <h1>JOIAS & ACESSÓRIOS</h1>
+        <p>Elegância em cada detalhe.</p>
     </header>
 
-    <div id="search-container">
-        <input type="text" id="search-input" placeholder="O que você procura?">
-        <i class="fas fa-search search-icon"></i>
-    </div>
-
-    <div id="secao-filters">
-        <button class="secao-button active" data-secao="todos">Todos</button>
-        <button class="secao-button" data-secao="colares">Colares</button>
-        <button class="secao-button" data-secao="brincos">Brincos</button>
-        <button class="secao-button" data-secao="aneis">Anéis</button>
-        <button class="secao-button" data-secao="pulseiras">Pulseiras</button>
-        <button class="secao-button" data-secao="conjuntos">Conjuntos</button>
-    </div>
-
-    <div id="controls">
-        <button class="filter-button active" data-filter="pronta-entrega">Pronta Entrega</button>
-        <button class="filter-button" data-filter="sob-encomenda">Sob Encomenda</button>
-    </div>
-
-    <main class="container">
-        <div id="loading-message" style="text-align:center; padding:30px; color:var(--gold);">
-            <i class="fas fa-spinner fa-spin"></i> Carregando coleção...
+    <main>
+        <div id="search-container"><input type="text" id="search-input" placeholder="Buscar joia..."><i class="fas fa-search search-icon"></i></div>
+        
+        <div id="secao-filters">
+            <button class="secao-button active" data-secao="todos">Todas</button>
+            <button class="secao-button" data-secao="aneis">Anéis</button>
+            <button class="secao-button" data-secao="brincos">Brincos</button>
+            <button class="secao-button" data-secao="colares">Colares</button>
+            <button class="secao-button" data-secao="pulseiras">Pulseiras</button>
+            <button class="secao-button" data-secao="conjuntos">Conjuntos</button>
+            <button class="secao-button" data-secao="infantil">Infantil</button>
+            <button class="secao-button" data-secao="masculino">Masculino</button>
         </div>
-        <div id="products-grid">
-            </div>
+
+        <div id="controls">
+            <button class="filter-button active" data-filter="pronta-entrega">Pronta Entrega</button>
+            <button class="filter-button" data-filter="sob-encomenda">Sob Encomenda</button>
+        </div>
+
+        <h2 id="collection-title" style="text-align:center; color:#555; margin-bottom:20px;">Carregando...</h2>
+        <div id="products-grid"></div>
     </main>
-
-    <div id="cart-icon" onclick="toggleCart()">
-        <i class="fas fa-shopping-bag"></i>
-        <span id="cart-count">0</span>
-    </div>
-
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Sua Sacola</h3>
-                <span style="cursor:pointer; font-size:1.5rem;" onclick="toggleCart()">&times;</span>
-            </div>
-            
-            <div id="cart-items" style="flex-grow:1; overflow-y:auto;">
-                <p style="text-align:center; color:#999; margin-top:20px;">Sua sacola está vazia.</p>
-            </div>
-
-            <div style="border-top:1px solid #eee; padding-top:15px; margin-top:10px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold; font-size:1.1rem;">
-                    <span>Total:</span>
-                    <span id="cart-total">R$ 0,00</span>
-                </div>
-                <button class="btn-whatsapp" onclick="checkoutWhatsApp()">
-                    <i class="fab fa-whatsapp"></i> Finalizar Pedido
-                </button>
-            </div>
-        </div>
-    </div>
+    
+    <a id="cart-icon" href="carrinho.html"><i class="fas fa-shopping-bag"></i><span id="cart-count">0</span></a>
+    <footer>© 2025 Joias & Acessórios</footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    
-    <script src="app.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "SUA_NOVA_API_KEY", authDomain: "novo.firebaseapp.com", projectId: "novo", storageBucket: "novo.app", messagingSenderId: "123", appId: "123" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const grid=document.getElementById('products-grid'), cartCountEl=document.getElementById('cart-count'), secaoButtons=document.querySelectorAll('.secao-button'), filterButtons=document.querySelectorAll('.filter-button');
+        let currentFilter='pronta-entrega', currentSecao='todos';
+
+        async function fetchProducts(){
+            grid.innerHTML = '<p style="text-align:center; width:100%">Carregando...</p>';
+            let q = db.collection("products"); 
+            if(currentSecao!=='todos') q = q.where("secao","==",currentSecao);
+            q = q.where("source","==",currentFilter).orderBy("createdAt","desc");
+            
+            try {
+                const snap = await q.get();
+                grid.innerHTML = '';
+                if(snap.empty) { grid.innerHTML = '<p style="text-align:center; width:100%">Nenhum produto.</p>'; return; }
+                
+                snap.forEach(d => {
+                    const p=d.data(), id=d.id, pf=parseFloat(p.price).toLocaleString('ja-JP');
+                    let badge=''; if(p.isFeatured==='novo') badge='<span class="badge badge-novo">NOVO</span>';
+                    if(p.estoqueTotal <= 0) badge='<span class="badge badge-esgotado">ESGOTADO</span>';
+                    
+                    grid.innerHTML += `
+                    <a href="detalhes.html?id=${id}" class="product-card">
+                        ${badge}
+                        <div class="product-image-container"><img src="${p.imageUrl}" class="product-image"></div>
+                        <div class="product-info">
+                            <h3 class="product-name">${p.name}</h3>
+                            <div class="product-price">¥${pf}</div>
+                        </div>
+                    </a>`;
+                });
+                document.getElementById('collection-title').textContent = document.querySelector('.secao-button.active').textContent;
+            } catch(e) { grid.innerHTML='Erro ao carregar.'; console.error(e); }
+        }
+
+        function updateCartIcon(){ const c=JSON.parse(localStorage.getItem('whatsappCart'))||{items:{}}; let q=0; Object.values(c.items).forEach(i=>q+=i.quantity); if(q>0){cartCountEl.textContent=q;cartCountEl.style.display='flex'}else{cartCountEl.style.display='none'} }
+        
+        secaoButtons.forEach(b=>b.addEventListener('click',()=>{secaoButtons.forEach(bt=>bt.classList.remove('active'));b.classList.add('active');currentSecao=b.dataset.secao;fetchProducts()}));
+        filterButtons.forEach(b=>b.addEventListener('click',()=>{filterButtons.forEach(bt=>bt.classList.remove('active'));b.classList.add('active');currentFilter=b.dataset.filter;fetchProducts()}));
+        
+        // Load Config (Logo)
+        db.collection("configuracoes").doc("siteInfo").get().then(d=>{if(d.exists&&d.data().logoUrl)document.getElementById('main-header').innerHTML=`<img src="${d.data().logoUrl}" style="max-width:200px">`});
+
+        document.addEventListener('DOMContentLoaded', ()=>{ fetchProducts(); updateCartIcon(); });
+    </script>
 </body>
 </html>
