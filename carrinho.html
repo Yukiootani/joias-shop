@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho | 3Marias Joias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root { --primary-color: #D4AF37; --text-color: #333; --bg-color: #FFFFFF; --whatsapp-green: #28a745; --error-color: #dc3545; }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); }
+        header { background-color: white; padding: 1rem; border-bottom: 1px solid #eee; }
+        header a { color: var(--text-color); text-decoration: none; font-weight: bold; }
+        main { max-width: 800px; margin: 30px auto; padding: 0 15px; }
+        .cart-item { display: flex; gap: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; }
+        .cart-item-info h3 { margin: 0 0 5px 0; font-size: 1em; }
+        .cart-item-price { font-weight: bold; color: var(--primary-color); }
+        .quantity-control { display: flex; gap: 10px; margin-top: 10px; }
+        .qty-btn { background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+        .checkout-button { display: block; background-color: var(--whatsapp-green); color: white; text-align: center; padding: 15px; text-decoration: none; font-weight: bold; border-radius: 4px; margin-top: 20px; }
+        .cart-item-remove { color: var(--error-color); font-size: 0.8em; cursor: pointer; text-decoration: underline; display: block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <header><a href="index.html">&larr; Voltar para a Loja</a></header>
+    <main>
+        <h1 style="text-align:center; color:var(--primary-color)">Seu Carrinho</h1>
+        <div id="cart-items-container"><p style="text-align:center">Carrinho vazio.</p></div>
+        <div id="cart-summary" style="display:none">
+            <h3 style="text-align:right">Total: <span id="cart-total">¥0</span></h3>
+            <a href="#" id="whatsapp-checkout-btn" class="checkout-button"><i class="fab fa-whatsapp"></i> Finalizar no WhatsApp</a>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        // 🚨 CHAVES ATUALIZADAS PARA JOIAS
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWYPzaDszTenGqC627aKH5CNaCdIOdoKw",
+            authDomain: "marias-joias-db345.firebaseapp.com",
+            projectId: "marias-joias-db345",
+            storageBucket: "marias-joias-db345.firebasestorage.app",
+            messagingSenderId: "977811297166",
+            appId: "1:977811297166:web:d0d9cf5477d7deb8bdcadf"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const WHATSAPP_NUMBER = "818074558624"; // Se mudou o número, troque aqui
+
+        const container = document.getElementById('cart-items-container');
+        
+        async function renderCart() {
+            const cart = JSON.parse(localStorage.getItem('whatsappCart')) || { items: {} };
+            const ids = Object.keys(cart.items);
+            if (ids.length === 0) return;
+            
+            container.innerHTML = '';
+            let total = 0;
+            let msg = "Olá! Gostaria de pedir:\n\n";
+
+            for (const key of ids) {
+                const item = cart.items[key];
+                // Verifica estoque em tempo real
+                let maxStock = 999;
+                try {
+                    const doc = await db.collection('products').doc(item.id).get();
+                    if(doc.exists) {
+                        const p = doc.data();
+                        if(p.variantes && p.variantes[item.color] && p.variantes[item.color][item.size] !== undefined) {
+                            maxStock = p.variantes[item.color][item.size];
+                        } else if(p.estoqueTotal) {
+                            maxStock = p.estoqueTotal;
+                        }
+                    }
+                } catch(e){}
+
+                if(item.quantity > maxStock) item.quantity = maxStock;
+                if(item.quantity <= 0) continue;
+
+                total += item.price * item.quantity;
+                const totalItem = item.price * item.quantity;
+                
+                container.innerHTML += `
+                <div class="cart-item">
+                    <img src="${item.image}">
+                    <div class="cart-item-info">
+                        <h3>${item.name}</h3>
+                        <small>${item.color} | Tam: ${item.size}</small>
+                        <div class="quantity-control">
+                           <button class="qty-btn" onclick="updateQty('${key}', -1)">-</button>
+                           <span>${item.quantity}</span>
+                           <button class="qty-btn" onclick="updateQty('${key}', 1, ${maxStock})">+</button>
+                        </div>
+                        <span class="cart-item-remove" onclick="removeItem('${key}')">Remover</span>
+                    </div>
+                    <div class="cart-item-price">¥${totalItem.toLocaleString('ja-JP')}</div>
+                </div>`;
+                
+                msg += `*${item.quantity}x* ${item.name}\n   (${item.color}, ${item.size})\n`;
+            }
+
+            document.getElementById('cart-total').textContent = '¥' + total.toLocaleString('ja-JP');
+            msg += `\n*Total: ¥${total.toLocaleString('ja-JP')}*`;
+            document.getElementById('cart-summary').style.display = 'block';
+            document.getElementById('whatsapp-checkout-btn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+            localStorage.setItem('whatsappCart', JSON.stringify(cart));
+        }
+
+        window.updateQty = (key, delta, max=999) => {
+            const c = JSON.parse(localStorage.getItem('whatsappCart'));
+            if(c.items[key]) {
+                c.items[key].quantity += delta;
+                if(c.items[key].quantity > max) { alert('Estoque máximo atingido'); c.items[key].quantity = max; }
+                if(c.items[key].quantity < 1) c.items[key].quantity = 1;
+                localStorage.setItem('whatsappCart', JSON.stringify(c));
+                renderCart();
+            }
+        };
+        window.removeItem = (key) => {
+            if(confirm('Remover?')){
+                const c = JSON.parse(localStorage.getItem('whatsappCart'));
+                delete c.items[key];
+                localStorage.setItem('whatsappCart', JSON.stringify(c));
+                location.reload();
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', renderCart);
+    </script>
+</body>
+</html>
