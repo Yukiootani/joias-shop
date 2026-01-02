@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Joias | Gestão</title>
+    <title>Admin 3Marias | Joias</title>
     <style>
-        :root { --primary-color: #D4AF37; /* Dourado */ --accent-color: #333; --text-color: #333; --bg-color: #fcfcfc; --border-color: #e0e0e0; --error-color: #dc3545; }
+        :root { --primary-color: #D4AF37; --accent-color: #333; --text-color: #333; --bg-color: #fcfcfc; --border-color: #e0e0e0; --error-color: #dc3545; }
         body { font-family: Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
         h1, h2, h3 { color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
@@ -36,7 +36,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Admin Joias</h1>
+        <h1>Admin 3Marias Joias</h1>
         <section id="login-section">
             <h3>Login</h3>
             <form id="loginForm"><input type="email" id="login-email" placeholder="Email"><input type="password" id="login-password" placeholder="Senha"><button type="submit">Entrar</button></form>
@@ -47,7 +47,7 @@
             <div id="status"></div>
             <div id="push-panel">
                 <h3>📢 Notificação (Push)</h3>
-                <input type="text" id="push-title" placeholder="Título">
+                <input type="text" id="push-title" placeholder="Título (Ex: Chegou Ouro 18k!)">
                 <textarea id="push-body" placeholder="Mensagem..." style="min-height: 60px;"></textarea>
                 <input type="text" id="push-link" placeholder="Link (opcional)">
                 <button id="btn-send-push" style="background-color: #d48806; margin-top: 10px;">Enviar</button>
@@ -55,19 +55,20 @@
             </div>
             
             <div id="reviews-panel">
-                <h3>⭐ Avaliações</h3>
-                <select id="review-product-select"><option value="">Carregando...</option></select>
-                <input type="text" id="review-name" placeholder="Cliente">
-                <select id="review-rating"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option></select>
+                <h3>⭐ Gerenciar Avaliações</h3>
+                <select id="review-product-select"><option value="">Carregando produtos...</option></select>
+                <input type="text" id="review-name" placeholder="Nome do Cliente">
+                <select id="review-rating"><option value="5">5 Estrelas</option><option value="4">4 Estrelas</option><option value="3">3 Estrelas</option></select>
                 <textarea id="review-text" placeholder="Comentário"></textarea>
-                <button id="btn-save-review" style="background-color: #0050b3; margin-top:10px">Salvar</button>
+                <button id="btn-save-review" style="background-color: #0050b3; margin-top:10px">Salvar Avaliação</button>
+                <div class="table-container" style="margin-top:10px"><table id="reviews-table"><thead><tr><th>Prod</th><th>Cli</th><th>Nota</th><th>Ação</th></tr></thead><tbody id="reviews-list"></tbody></table></div>
             </div>
             <hr>
 
             <form id="product-form">
                 <h3 id="form-title">Novo Produto</h3>
                 <input type="hidden" id="productId"> 
-                <label>Nome:</label><input type="text" id="name" required>
+                <label>Nome da Joia:</label><input type="text" id="name" required>
                 <label>Preço (¥):</label><input type="number" id="price" required>
                 <label>Categoria:</label>
                 <select id="secao" required>
@@ -83,14 +84,16 @@
                 </select>
                 <label>Descrição:</label><textarea id="description" rows="4"></textarea>
                 
-                <label>Variações (Cor/Banho e Tamanho):</label>
+                <label>Variações (Cor/Metal e Tamanho):</label>
                 <div id="variants-container"></div>
                 <button type="button" id="add-variant-btn" style="margin-top:5px;">+ Adicionar Variação</button>
 
-                <label>Disp.:</label><select id="source" required><option value="pronta-entrega">Pronta Entrega</option><option value="sob-encomenda">Sob Encomenda</option></select>
+                <label>Disponibilidade:</label><select id="source" required><option value="pronta-entrega">Pronta Entrega</option><option value="sob-encomenda">Sob Encomenda</option></select>
                 <label>Selo:</label><select id="isFeatured"><option value="nenhum">Nenhum</option><option value="novo">Novidade</option><option value="destaque">Destaque</option></select>
-                <label>Imagens/Vídeo:</label>
-                <input type="file" id="imageUrl" placeholder="Capa"><input type="file" id="videoUrl" placeholder="Vídeo"><input type="file" id="galeria" multiple placeholder="Galeria">
+                <label>Mídia:</label>
+                <input type="file" id="imageUrl"><small>Capa</small>
+                <input type="file" id="videoUrl"><small>Vídeo (opcional)</small>
+                <input type="file" id="galeria" multiple><small>Galeria (várias fotos)</small>
                 
                 <button type="submit" id="save-btn" style="margin-top:15px;">Salvar Produto</button>
                 <button type="button" id="cancel-edit-btn" style="display:none; background:#777; margin-top:10px;">Cancelar</button>
@@ -110,8 +113,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> 
 
     <script>
-        // 🚨 LEMBRE DE TROCAR PELAS CHAVES NOVAS DA LOJA DE JOIAS
-        const firebaseConfig = { apiKey: "SUA_NOVA_API_KEY", authDomain: "novo.firebaseapp.com", projectId: "novo", storageBucket: "novo.app", messagingSenderId: "123", appId: "123" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWYPzaDszTenGqC627aKH5CNaCdIOdoKw",
+            authDomain: "marias-joias-db345.firebaseapp.com",
+            projectId: "marias-joias-db345",
+            storageBucket: "marias-joias-db345.firebasestorage.app",
+            messagingSenderId: "977811297166",
+            appId: "1:977811297166:web:d0d9cf5477d7deb8bdcadf"
+        };
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore(); const storage = firebase.storage(); const auth = firebase.auth(); 
@@ -163,7 +172,7 @@
             function setVariants(v){ variantsContainer.innerHTML=''; if(v)for(let c in v)createVariantEntry(c,v[c]); }
             function calcTotal(v){ let t=0; for(let c in v)for(let s in v[c])t+=v[c][s]; return t; }
 
-            // PRODUTOS CRUD
+            // CRUD Produtos
             const productsList = document.getElementById('products-list');
             const reviewProductSelect = document.getElementById('review-product-select');
             
@@ -213,12 +222,23 @@
             });
             document.getElementById('cancel-edit-btn').addEventListener('click', ()=>{document.getElementById('product-form').reset(); variantsContainer.innerHTML=''; document.getElementById('productId').value=''; document.getElementById('cancel-edit-btn').style.display='none';});
 
-            // LOGO
+            // LOGO & Avaliações & Push
             const logoForm = document.getElementById('logo-form'); const logoPrev = document.getElementById('logo-preview');
             async function loadSiteConfig() { try{ const d=await db.collection("configuracoes").doc("siteInfo").get(); if(d.exists) logoPrev.src=d.data().logoUrl; }catch(e){} }
             logoForm.addEventListener('submit', async (e) => { e.preventDefault(); const f=document.getElementById('logo-upload').files[0]; if(f){ try{ const u=await uploadFile(f,"configuracoes/logo_principal"); await db.collection("configuracoes").doc("siteInfo").set({logoUrl:u},{merge:true}); logoPrev.src=u; }catch(e){} } });
             
-            // Push & Reviews (Simplified for Brevity - Logic same as Base)
+            // Avaliações
+            const reviewsList = document.getElementById('reviews-list');
+            async function fetchReviews() {
+                try { reviewsList.innerHTML = '...'; const snap = await db.collection('reviews').orderBy('createdAt', 'desc').limit(20).get(); let h = ''; snap.forEach(d => { const r=d.data(); h+=`<tr><td>${r.productName}</td><td>${r.customerName}</td><td>${r.rating}⭐</td><td><button class="delete-btn del-rev" data-id="${d.id}">X</button></td></tr>`; }); reviewsList.innerHTML = h || '<tr><td colspan="4">Vazio</td></tr>'; document.querySelectorAll('.del-rev').forEach(b => b.addEventListener('click', async (e) => { if(confirm("Apagar?")){ await db.collection('reviews').doc(e.target.dataset.id).delete(); fetchReviews(); } })); } catch(e){}
+            }
+            document.getElementById('btn-save-review').addEventListener('click', async () => {
+                const pid = reviewProductSelect.value; const name = document.getElementById('review-name').value; const text = document.getElementById('review-text').value;
+                if(!pid || !name || !text) return alert("Preencha tudo!");
+                try { await db.collection('reviews').add({ productId: pid, productName: reviewProductSelect.options[reviewProductSelect.selectedIndex].text, customerName: name, text: text, rating: parseInt(document.getElementById('review-rating').value), createdAt: firebase.firestore.FieldValue.serverTimestamp() }); showStatus(statusDiv, "Salvo!", "success"); document.getElementById('review-text').value=''; fetchReviews(); } catch(e){ showStatus(statusDiv, e.message, "error"); }
+            });
+
+            // Push
             async function fetchMessages() { const l=document.getElementById('messages-list'); l.innerHTML=''; (await db.collection('site_messages').orderBy('createdAt','desc').get()).forEach(d=>{l.innerHTML+=`<tr><td>${d.data().title}</td><td>${d.data().body}</td><td><button onclick="db.collection('site_messages').doc('${d.id}').delete();this.closest('tr').remove()">X</button></td></tr>`}); }
             document.getElementById('btn-send-push').addEventListener('click', async()=>{
                 const t=document.getElementById('push-title').value, b=document.getElementById('push-body').value, l=document.getElementById('push-link').value;
