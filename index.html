@@ -22,9 +22,9 @@
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
         
-        /* BOTÃO INSTALAR ANDROID */
+        /* --- BOTÃO INSTALAR ANDROID --- */
         #android-install-btn {
-            display: none; /* Oculto por padrão, aparece via JS */
+            display: none; /* Só aparece se o Android permitir */
             width: 100%;
             background-color: var(--whatsapp-green);
             color: white;
@@ -39,12 +39,13 @@
             z-index: 9999;
         }
 
+        /* --- CABEÇALHO --- */
         header { background-color: #fff; text-align: center; padding: 15px; border-bottom: 2px solid var(--primary-color); position: relative; }
         .header-logo { max-width: 200px; height: auto; display: block; margin: 0 auto; }
         h1 { color: var(--primary-color); font-family: 'Times New Roman', serif; letter-spacing: 2px; margin: 5px 0 0 0; font-size: 1.5em; }
         header p { color: #666; font-size: 0.9em; margin: 5px 0 0 0; }
 
-        /* SINO DE NOTIFICAÇÃO */
+        /* --- SINO DE NOTIFICAÇÃO --- */
         #notification-bell { 
             position: fixed; top: 15px; right: 15px; 
             font-size: 22px; color: var(--primary-color); 
@@ -62,7 +63,7 @@
             display: none; border: 1px solid white;
         }
 
-        /* INBOX MODAL */
+        /* --- INBOX (CAIXA DE MENSAGENS) --- */
         #inbox-modal { display: none; position: fixed; z-index: 2500; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: start; padding-top: 60px; }
         .inbox-content { background-color: #fff; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; animation: slideDown 0.3s ease; }
         @keyframes slideDown { from {transform: translateY(-20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
@@ -76,9 +77,9 @@
         .inbox-date { font-size: 0.75em; color: #aaa; text-align: right; }
         .inbox-empty { padding: 20px; text-align: center; color: #999; font-style: italic; }
 
+        /* --- LOJA --- */
         main { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
         
-        /* UI GERAL */
         #search-container { position: relative; max-width: 600px; margin: 0 auto 20px; }
         #search-input { width: 100%; padding: 12px 40px 12px 20px; border: 1px solid #ddd; border-radius: 25px; outline: none; box-sizing: border-box; }
         #search-input:focus { border-color: var(--primary-color); box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
@@ -184,7 +185,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
 
     <script>
-        // 1. FIREBASE CONFIG
+        // --- 1. CONFIGURAÇÃO FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyCWYPzaDszTenGqC627aKH5CNaCdIOdoKw",
             authDomain: "marias-joias-db345.firebaseapp.com",
@@ -196,17 +197,14 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 2. INSTALAÇÃO ANDROID (CORREÇÃO DE BOTÃO)
+        // --- 2. INSTALAÇÃO ANDROID (Lógica do Botão) ---
         let deferredPrompt;
         const installBtn = document.getElementById('android-install-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Previne o Chrome de esconder o aviso sozinho
-            e.preventDefault();
+            e.preventDefault(); // Impede o Chrome de tentar instalar sozinho e falhar
             deferredPrompt = e;
-            // Mostra o botão
-            installBtn.style.display = 'block';
-            console.log("PWA: Instalação disponível");
+            installBtn.style.display = 'block'; // Mostra nosso botão verde
         });
 
         installBtn.addEventListener('click', async () => {
@@ -220,48 +218,69 @@
             }
         });
 
-        // 3. NOTIFICAÇÃO (PERMISSÃO MANUAL AO CLICAR NO SINO)
+        // --- 3. NOTIFICAÇÕES (Permissão + Token + Foreground) ---
         let messaging;
-        try { if (firebase.messaging.isSupported()) messaging = firebase.messaging(); } catch (e) {}
+        try { 
+            if (firebase.messaging.isSupported()) {
+                messaging = firebase.messaging();
+                
+                // ESCUTA MENSAGENS QUANDO O APP ESTÁ ABERTO (FOREGROUND)
+                messaging.onMessage((payload) => {
+                    console.log('Mensagem recebida com App aberto:', payload);
+                    const title = payload.notification.title;
+                    const body = payload.notification.body;
+                    
+                    // Mostra um alerta visual na tela
+                    alert(`🔔 NOVA MENSAGEM!\n\n${title}\n${body}`);
+                    
+                    // Atualiza o sininho (coloca a bolinha vermelha)
+                    document.getElementById('notification-dot').style.display = 'block';
+                });
+            }
+        } catch (e) {
+            console.log("Messaging não suportado neste navegador.");
+        }
 
         async function requestPermission() {
             if (!messaging) return;
             try {
-                // Pede permissão explícita para o navegador
+                // Pede permissão ao navegador
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
-                    // Pega o Token
+                    // Pega o Token usando a CHAVE VAPID CERTA
                     const token = await messaging.getToken({ 
                         vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI' 
                     });
                     
                     if (token) {
+                        // Salva no banco de dados
                         await db.collection('push_tokens').doc(token).set({
                             token: token,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            platform: navigator.userAgent // Salva qual é o aparelho (opcional)
                         });
-                        alert("✅ Notificações Ativadas com Sucesso!");
+                        alert("✅ Notificações Ativadas! Você receberá novidades em breve.");
                     }
                 } else {
-                    alert("⚠️ Você precisa permitir as notificações nas configurações do navegador.");
+                    alert("⚠️ Você precisa permitir as notificações nas configurações do site.");
                 }
             } catch (e) {
-                console.error("Erro token:", e);
+                console.error("Erro ao pegar token:", e);
             }
         }
 
-        // 4. LÓGICA DO SINO E INBOX
+        // --- 4. LÓGICA DO SINO E INBOX ---
         const bell = document.getElementById('notification-bell');
         const inboxModal = document.getElementById('inbox-modal');
         const inboxList = document.getElementById('inbox-list');
 
         bell.addEventListener('click', () => {
-            // Se ainda não tem permissão, pede agora
+            // Tenta pedir permissão se o usuário nunca clicou antes
             if (Notification.permission === 'default') {
                 requestPermission();
             }
 
-            // Abre o modal
+            // Abre o modal de mensagens
             inboxModal.style.display = 'flex';
             carregarMensagens();
 
@@ -291,7 +310,7 @@
             } catch(e) { inboxList.innerHTML = '<li class="inbox-empty">Erro ao carregar.</li>'; }
         }
 
-        // 5. LÓGICA DA LOJA (PRODUTOS)
+        // --- 5. LÓGICA DA LOJA (PRODUTOS) ---
         const grid = document.getElementById('products-grid');
         const cartCountEl = document.getElementById('cart-count');
         const secaoButtons = document.querySelectorAll('.secao-button');
@@ -329,7 +348,6 @@
                     </a>`;
                 });
                 
-                // Atualiza Título
                 const secaoNome = document.querySelector(`.secao-button[data-secao="${currentSecao}"]`).innerText;
                 const filtroNome = document.querySelector(`.filter-button[data-filter="${currentFilter}"]`).innerText;
                 document.getElementById('collection-title').innerText = `${secaoNome} - ${filtroNome}`;
