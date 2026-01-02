@@ -13,24 +13,24 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// Esta função roda quando o app está FECHADO ou em SEGUNDO PLANO
+// 1. RECEBER NO BACKGROUND (TELA BLOQUEADA/FECHADA)
 messaging.onBackgroundMessage((payload) => {
-  console.log('[Background] Notificação recebida:', payload);
+  console.log('[Background] Notificação:', payload);
 
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: 'https://i.imgur.com/BIXdM6M.png', // Ícone da notificação
-    vibrate: [200, 100, 200],
-    data: {
-        url: payload.data?.url || payload.notification?.click_action || '/'
+    icon: 'https://i.imgur.com/BIXdM6M.png', // Ícone
+    vibrate: [200, 100, 200], // Vibrar
+    data: { 
+        url: payload.data?.url || payload.notification?.click_action || '/' 
     }
   };
 
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// Clique na notificação abre o site
+// 2. CLIQUE NA NOTIFICAÇÃO (ABRIR SITE)
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   event.waitUntil(
