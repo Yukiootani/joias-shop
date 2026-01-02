@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Joia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ... COPIE O MESMO CSS DO SEU ARQUIVO DETALHES ANTERIOR ... */
+        /* APENAS ADICIONE ISTO: */
+        :root { --primary-color: #D4AF37; }
+        /* ... Mantenha o resto igual ... */
+    </style>
+</head>
+<body>
+    <div id="product-details"></div> <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "SUA_NOVA_API_KEY", authDomain: "novo.firebaseapp.com", projectId: "novo", storageBucket: "novo.app", messagingSenderId: "123", appId: "123" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ... (Mantenha as variáveis globais: detailsContainer, etc.) ...
+        
+        // 🚨 O PULO DO GATO ESTÁ AQUI NA FUNÇÃO RENDER SIZE 🚨
+        function renderSizeOptions(color){
+            const sizeContainer=document.getElementById('size-selector');
+            sizeContainer.innerHTML='';
+            const stock=parsedVariants[color];
+            if(!stock)return;
+            
+            // LISTA DE TAMANHOS DE JOIAS
+            const jewelrySizes = ['Unico', '12', '14', '16', '18', '20', '22', '24'];
+            
+            jewelrySizes.forEach(s => {
+                if(stock.hasOwnProperty(s)){
+                    const dis=stock[s]<=0;
+                    sizeContainer.innerHTML+=`<div class="size-button ${dis?'disabled':''}" data-size="${s}">${s} ${dis?'(Esgotado)':''}</div>`;
+                }
+            });
+        }
+
+        // ... (O resto da lógica fetchProductDetails, handleAddToCart É IGUAL AO ANTERIOR) ...
+    </script>
+</body>
+</html>
