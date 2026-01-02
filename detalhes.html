@@ -6,41 +6,136 @@
     <title>Detalhes da Joia</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ... COPIE O MESMO CSS DO SEU ARQUIVO DETALHES ANTERIOR ... */
-        /* APENAS ADICIONE ISTO: */
-        :root { --primary-color: #D4AF37; }
-        /* ... Mantenha o resto igual ... */
+        :root { --primary-color: #D4AF37; --accent-color: #333; --whatsapp-green: #28a745; --text-color: #333; --light-text: #666; --bg-color: #FFFFFF; --border-color: #f0f0f0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
+        header { background-color: white; color: var(--text-color); padding: 1rem; border-bottom: 1px solid var(--border-color); }
+        header a { color: var(--text-color); text-decoration: none; font-size: 1em; font-weight: 500; }
+        main { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        #product-details { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 40px; }
+        .media-area { flex: 1 1 50%; min-width: 300px; }
+        #main-media-display { position: relative; width: 100%; padding-top: 100%; background: #f9f9f9; border: 1px solid var(--border-color); overflow: hidden; }
+        #main-media-display img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; }
+        .info-area { flex: 1 1 40%; }
+        .info-area h1 { font-size: 1.8em; margin-bottom: 5px; }
+        .info-area .price { font-size: 1.6em; font-weight: 700; color: var(--primary-color); margin: 15px 0; }
+        .buy-button { display: block; background-color: var(--primary-color); color: white; text-align: center; padding: 15px; text-decoration: none; font-size: 1.1em; font-weight: bold; border-radius: 5px; margin-top: 30px; border: none; cursor: pointer; }
+        .buy-button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .variant-group { margin-top: 20px; }
+        .color-swatch { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; display: inline-block; margin-right: 5px; }
+        .color-swatch.active { border-color: var(--primary-color); }
+        .size-button { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; display: inline-block; margin: 5px; min-width: 30px; text-align: center; }
+        .size-button.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .size-button.disabled { background: #eee; color: #aaa; text-decoration: line-through; pointer-events: none; }
+        #cart-icon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--whatsapp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; text-decoration: none; }
+        #cart-count { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
-    <div id="product-details"></div> <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <header><a href="index.html">&larr; Voltar para a Loja</a></header>
+    <main>
+        <div id="product-details"></div>
+    </main>
+    <a id="cart-icon" href="carrinho.html"><i class="fas fa-shopping-bag"></i><span id="cart-count">0</span></a>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script>
-        const firebaseConfig = { apiKey: "SUA_NOVA_API_KEY", authDomain: "novo.firebaseapp.com", projectId: "novo", storageBucket: "novo.app", messagingSenderId: "123", appId: "123" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWYPzaDszTenGqC627aKH5CNaCdIOdoKw",
+            authDomain: "marias-joias-db345.firebaseapp.com",
+            projectId: "marias-joias-db345",
+            storageBucket: "marias-joias-db345.firebasestorage.app",
+            messagingSenderId: "977811297166",
+            appId: "1:977811297166:web:d0d9cf5477d7deb8bdcadf"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ... (Mantenha as variáveis globais: detailsContainer, etc.) ...
+        const detailsContainer=document.getElementById('product-details'); let currentProductId=null, parsedVariants={}, selectedColor=null, selectedSize=null, productName="Joia", productPrice=0, productImageUrl='';
         
-        // 🚨 O PULO DO GATO ESTÁ AQUI NA FUNÇÃO RENDER SIZE 🚨
-        function renderSizeOptions(color){
-            const sizeContainer=document.getElementById('size-selector');
-            sizeContainer.innerHTML='';
-            const stock=parsedVariants[color];
-            if(!stock)return;
-            
-            // LISTA DE TAMANHOS DE JOIAS
-            const jewelrySizes = ['Unico', '12', '14', '16', '18', '20', '22', '24'];
-            
-            jewelrySizes.forEach(s => {
-                if(stock.hasOwnProperty(s)){
-                    const dis=stock[s]<=0;
-                    sizeContainer.innerHTML+=`<div class="size-button ${dis?'disabled':''}" data-size="${s}">${s} ${dis?'(Esgotado)':''}</div>`;
+        document.addEventListener('DOMContentLoaded', () => {
+            const id = new URLSearchParams(window.location.search).get('id');
+            if(!id) return document.body.innerHTML='Produto não encontrado';
+            currentProductId = id; fetchProductDetails(id); updateCartIcon();
+        });
+
+        async function fetchProductDetails(id) {
+            try {
+                const doc = await db.collection("products").doc(id).get();
+                if(!doc.exists) return;
+                const p = doc.data();
+                productName=p.name; productPrice=p.price; productImageUrl=p.imageUrl; parsedVariants=p.variantes||{};
+                
+                let variantsHTML = '';
+                const colors = Object.keys(parsedVariants);
+                if(colors.length > 0){
+                    variantsHTML += `<div class="variant-group"><label>Acabamento:</label><div id="color-selector">${colors.map(c=>`<div class="color-swatch" data-color="${c}" style="background:${getSafeColor(c)}" title="${c}"></div>`).join('')}</div></div>`;
+                    variantsHTML += `<div class="variant-group"><label>Tamanho (Aro):</label><div id="size-selector">Selecione o acabamento acima.</div></div>`;
+                }
+                
+                detailsContainer.innerHTML = `
+                    <div class="media-area"><div id="main-media-display"><img src="${p.imageUrl}"></div></div>
+                    <div class="info-area">
+                        <h1>${p.name}</h1>
+                        <p class="price">¥${p.price.toLocaleString('ja-JP')}</p>
+                        ${variantsHTML}
+                        <p>${p.description}</p>
+                        <button class="buy-button" id="add-to-cart-btn" disabled>Escolha as opções</button>
+                    </div>`;
+
+                if(colors.length>0) setupSelectors();
+                else { document.getElementById('add-to-cart-btn').disabled=false; document.getElementById('add-to-cart-btn').textContent="Adicionar ao Carrinho"; }
+                document.getElementById('add-to-cart-btn').addEventListener('click', handleAddToCart);
+            } catch(e) { console.error(e); }
+        }
+
+        function setupSelectors(){
+            const cSel = document.getElementById('color-selector'), sSel = document.getElementById('size-selector');
+            cSel.addEventListener('click', e=>{
+                if(e.target.classList.contains('color-swatch')){
+                    cSel.querySelectorAll('.active').forEach(x=>x.classList.remove('active')); e.target.classList.add('active');
+                    selectedColor=e.target.dataset.color; selectedSize=null;
+                    renderSizeOptions(selectedColor); checkBtn();
+                }
+            });
+            sSel.addEventListener('click', e=>{
+                if(e.target.classList.contains('size-button') && !e.target.classList.contains('disabled')){
+                    sSel.querySelectorAll('.active').forEach(x=>x.classList.remove('active')); e.target.classList.add('active');
+                    selectedSize=e.target.dataset.size; checkBtn();
                 }
             });
         }
 
-        // ... (O resto da lógica fetchProductDetails, handleAddToCart É IGUAL AO ANTERIOR) ...
+        function renderSizeOptions(color){
+            const sSel=document.getElementById('size-selector'); sSel.innerHTML='';
+            const stock=parsedVariants[color];
+            // Tamanhos de Joias
+            ['Unico','12','14','16','18','20','22','24'].forEach(s=>{
+                if(stock.hasOwnProperty(s)){
+                    const dis=stock[s]<=0;
+                    sSel.innerHTML+=`<div class="size-button ${dis?'disabled':''}" data-size="${s}">${s}</div>`;
+                }
+            });
+        }
+
+        function checkBtn(){
+            const btn=document.getElementById('add-to-cart-btn');
+            if(selectedColor && selectedSize) { btn.disabled=false; btn.textContent="Adicionar ao Carrinho"; }
+            else { btn.disabled=true; btn.textContent="Escolha as opções"; }
+        }
+
+        function handleAddToCart(){
+            const cart=JSON.parse(localStorage.getItem('whatsappCart'))||{items:{}};
+            const id=`${currentProductId}_${selectedColor}_${selectedSize}`;
+            if(!cart.items[id]) cart.items[id]={id:currentProductId,name:productName,price:productPrice,color:selectedColor,size:selectedSize,image:productImageUrl,quantity:0};
+            cart.items[id].quantity++;
+            localStorage.setItem('whatsappCart',JSON.stringify(cart));
+            updateCartIcon();
+            document.getElementById('add-to-cart-btn').textContent="Adicionado! ✓";
+        }
+
+        function updateCartIcon(){ const c=JSON.parse(localStorage.getItem('whatsappCart'))||{items:{}}; let q=0; Object.values(c.items).forEach(i=>q+=i.quantity); if(q>0){document.getElementById('cart-count').textContent=q;document.getElementById('cart-count').style.display='flex'} }
+        function getSafeColor(n){ const map={'ouro 18k':'#D4AF37','prata 925':'#C0C0C0','rose gold':'#B76E79'}; return map[n.toLowerCase()]||'#ddd'; }
     </script>
 </body>
 </html>
