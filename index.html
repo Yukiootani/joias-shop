@@ -54,11 +54,11 @@
         
         /* Estilo da Imagem do Logo */
         .header-logo { 
-            max-width: 250px; /* Tamanho máximo do logo */
+            max-width: 250px; 
             height: auto; 
             display: block; 
             margin: 0 auto; 
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1)); /* Sombra leve para destacar */
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1)); 
         }
         
         header p { color: #888; font-size: 0.9em; margin: 10px 0 0 0; font-style: italic; }
@@ -172,7 +172,7 @@
     </div>
 
     <header id="main-header">
-        <img src="Gemini_Generated_Image_9z2kxv9z2kxv9z2k.png" class="header-logo" alt="3Marias Joias">
+        <img src="Gemini_Generated_Image_ojclpmojclpmojcl - Editado (1).png" class="header-logo" alt="3Marias Joias">
         <p>Elegância em cada detalhe.</p>
     </header>
 
@@ -307,8 +307,6 @@
         function updateCartIcon() { const cart = JSON.parse(localStorage.getItem('whatsappCart')) || { items: {} }; let totalQtd = 0; Object.values(cart.items).forEach(item => totalQtd += item.quantity); if (totalQtd > 0) { cartCountEl.textContent = totalQtd; cartCountEl.style.display = 'flex'; } else { cartCountEl.style.display = 'none'; } }
         secaoButtons.forEach(btn => { btn.addEventListener('click', () => { secaoButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentSecao = btn.dataset.secao; fetchProducts(); }); });
         filterButtons.forEach(btn => { btn.addEventListener('click', () => { filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.filter; fetchProducts(); }); });
-        
-        // Removemos o código antigo que sobrescrevia o logo pelo Firestore, pois agora é hardcoded
         
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('firebase-messaging-sw.js');
         const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
