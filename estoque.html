@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque Joias</title>
+    <style>body{font-family:sans-serif;padding:20px} .item{border:1px solid #ccc;margin:10px;padding:10px}</style> 
+</head>
+<body>
+    <h1>Gestão de Estoque Rápida</h1>
+    <div id="loading">Carregando...</div>
+    <div id="stock-list"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        // 🚨 CHAVES NOVAS
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWYPzaDszTenGqC627aKH5CNaCdIOdoKw",
+            authDomain: "marias-joias-db345.firebaseapp.com",
+            projectId: "marias-joias-db345",
+            storageBucket: "marias-joias-db345.firebasestorage.app",
+            messagingSenderId: "977811297166",
+            appId: "1:977811297166:web:d0d9cf5477d7deb8bdcadf"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // (A lógica aqui é idêntica à do estoque.html V4.0 que te passei antes. 
+        //  Pode colar o conteúdo do SCRIPT do estoque.html V4.0 aqui, 
+        //  apenas mantendo esse bloco const firebaseConfig novo acima).
+    </script>
+</body>
+</html>
