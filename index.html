@@ -12,7 +12,7 @@
     <link rel="manifest" href="manifest.json">
     
     <style>
-        /* --- VISUAL ROSA & DOURADO (MANTIDO) --- */
+        /* --- VISUAL ROSA & DOURADO --- */
         :root { 
             --rosa-shock: #FF007F;
             --dourado: #D4AF37;
@@ -130,17 +130,16 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- LÓGICA DE INSTALAÇÃO ANDROID ---
+        // --- INSTALAÇÃO ANDROID ---
         let deferredPrompt; const installBtn = document.getElementById('android-install-btn');
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
         installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; } });
 
-        // --- LÓGICA DE NOTIFICAÇÃO BLINDADA ---
+        // --- NOTIFICAÇÃO BLINDADA ---
         let messaging; 
         try { 
             if (firebase.messaging.isSupported()) {
                 messaging = firebase.messaging();
-                // Ouve quando o app está aberto
                 messaging.onMessage((payload) => {
                     console.log('Mensagem em Foreground:', payload);
                     alert(`💎 ${payload.notification.title}\n${payload.notification.body}`);
@@ -149,18 +148,21 @@
             }
         } catch (e) { console.log("Push não suportado."); }
 
+        // FUNÇÃO DE PERMISSÃO MAIS INTELIGENTE
         async function requestPermission() {
             if (!messaging) return;
             try {
-                // 1. Pede Permissão
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     
-                    // 2. REGISTRA O ARQUIVO CORRETO ANTES DE PEDIR O TOKEN (CORREÇÃO ANDROID)
-                    const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+                    // Verifica se já existe um registro antes de tentar criar outro
+                    let registration = await navigator.serviceWorker.getRegistration();
+                    if (!registration) {
+                        registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+                    }
                     await navigator.serviceWorker.ready;
 
-                    // 3. Pede o Token ligando ao registro acima
+                    // Pede token usando o registro confirmado
                     const token = await messaging.getToken({ 
                         vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI',
                         serviceWorkerRegistration: registration 
@@ -176,20 +178,17 @@
                         if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(()=>{});
                     }
                 } else {
-                    alert("⚠️ Permissão bloqueada. Vá nas configurações do site e desbloqueie.");
+                    alert("⚠️ Permissão bloqueada. Redefina nas configurações do site.");
                 }
             } catch (e) {
                 console.error("Erro token:", e);
-                alert("Erro ao ativar notificações: " + e.message);
+                alert("Erro: " + e.message);
             }
         }
 
-        // --- SINO & INBOX ---
         const bell=document.getElementById('notification-bell'), inboxModal=document.getElementById('inbox-modal'), inboxList=document.getElementById('inbox-list');
         bell.addEventListener('click', () => {
-            // Tenta ativar se ainda não tiver ativado
             if (Notification.permission === 'default') requestPermission();
-            
             inboxModal.style.display = 'flex';
             carregarMensagens();
             document.getElementById('notification-dot').style.display = 'none';
@@ -202,7 +201,6 @@
             try { const snap = await db.collection('site_messages').orderBy('createdAt','desc').limit(10).get(); inboxList.innerHTML = ''; if(snap.empty) { inboxList.innerHTML = '<li class="inbox-empty">Sem mensagens.</li>'; return; } snap.forEach(d => { const m = d.data(); const li = document.createElement('li'); li.className = 'inbox-item'; li.innerHTML = `<div class="inbox-title">${m.title}</div><div class="inbox-body">${m.body}</div>`; if(m.link) li.addEventListener('click', () => window.location.href = m.link); inboxList.appendChild(li); }); } catch(e) { inboxList.innerHTML = '<li class="inbox-empty">Erro ao carregar.</li>'; }
         }
 
-        // --- PRODUTOS ---
         const grid=document.getElementById('products-grid'), cartCountEl=document.getElementById('cart-count'), secaoButtons=document.querySelectorAll('.secao-button'), filterButtons=document.querySelectorAll('.filter-button'), searchInput=document.getElementById('search-input');
         let currentFilter='pronta-entrega', currentSecao='todos';
 
@@ -232,7 +230,7 @@
         secaoButtons.forEach(btn => { btn.addEventListener('click', () => { secaoButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentSecao = btn.dataset.secao; fetchProducts(); }); });
         filterButtons.forEach(btn => { btn.addEventListener('click', () => { filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.filter; fetchProducts(); }); });
         
-        // --- SERVICE WORKER GERAL (IMPORTANTE: Restaurado da versão Vitória) ---
+        // Registra SW globalmente para garantir PWA
         if ('serviceWorker' in navigator) {
              navigator.serviceWorker.register('firebase-messaging-sw.js');
         }
