@@ -12,7 +12,7 @@
     <link rel="manifest" href="manifest.json">
     
     <style>
-        /* --- VISUAL ROSA & DOURADO (SEU NOVO VISUAL) --- */
+        /* --- SEU VISUAL ROSA (MANTIDO) --- */
         :root { 
             --rosa-shock: #FF007F;
             --dourado: #D4AF37;
@@ -135,31 +135,31 @@
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
         installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; } });
 
-        // --- NOTIFICAÇÃO BLINDADA (CÓDIGO EXATO DA VITÓRIA) ---
+        // --- NOTIFICAÇÃO ---
         let messaging; 
         try { 
             if (firebase.messaging.isSupported()) {
                 messaging = firebase.messaging();
                 messaging.onMessage((payload) => {
-                    console.log('Mensagem em Foreground:', payload);
+                    console.log('Foreground:', payload);
                     alert(`💎 ${payload.notification.title}\n${payload.notification.body}`);
                     document.getElementById('notification-dot').style.display = 'block';
                 });
             }
         } catch (e) { console.log("Push não suportado."); }
 
+        // --- A LÓGICA QUE CONSERTA O ANDROID ---
         async function requestPermission() {
             if (!messaging) return;
             try {
-                // 1. Pede Permissão
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     
-                    // 2. O PULO DO GATO DO ANDROID (CÓDIGO QUE FUNCIONOU)
+                    // FORÇA O REGISTRO ANTES DE PEDIR O TOKEN
+                    // Isso é o que faz o Android "acordar"
                     const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
                     await navigator.serviceWorker.ready;
 
-                    // 3. Pede o Token
                     const token = await messaging.getToken({ 
                         vapidKey: 'BKLtspdFhL4vUgXiv6t6Jb05PBC09rAYeDglwJImsLLP5G2CDhssUK3VZaEiJqjhJgwP56VmISbhS52OmNMPkDI',
                         serviceWorkerRegistration: registration 
@@ -175,11 +175,11 @@
                         if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(()=>{});
                     }
                 } else {
-                    alert("⚠️ Permissão bloqueada. Vá nas configurações do site e desbloqueie.");
+                    alert("⚠️ Permissão bloqueada.");
                 }
             } catch (e) {
                 console.error("Erro token:", e);
-                alert("Erro ao ativar notificações: " + e.message);
+                alert("Erro ao ativar: " + e.message);
             }
         }
 
@@ -227,11 +227,8 @@
         secaoButtons.forEach(btn => { btn.addEventListener('click', () => { secaoButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentSecao = btn.dataset.secao; fetchProducts(); }); });
         filterButtons.forEach(btn => { btn.addEventListener('click', () => { filterButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.filter; fetchProducts(); }); });
         
-        // PWA BÁSICO (Para instalar e cache)
-        if ('serviceWorker' in navigator) {
-             navigator.serviceWorker.register('firebase-messaging-sw.js');
-        }
-
+        // Garante registro do SW
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('firebase-messaging-sw.js');
         const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
         if (isIos() && !isInStandaloneMode()) { document.getElementById('ios-install-banner').style.display = 'block'; document.getElementById('close-ios-banner').addEventListener('click', () => document.getElementById('ios-install-banner').style.display = 'none'); document.getElementById('cart-icon').style.bottom = '100px'; }
