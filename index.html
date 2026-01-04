@@ -135,7 +135,7 @@
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
         installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; } });
 
-        // --- LÓGICA DE NOTIFICAÇÃO BLINDADA (VOLTAMOS PARA A VERSÃO ORIGINAL DO FIX) ---
+        // --- LÓGICA DE NOTIFICAÇÃO BLINDADA ---
         let messaging; 
         try { 
             if (firebase.messaging.isSupported()) {
